@@ -1,0 +1,12 @@
+# Make Pulseaudio leave our codecs alone.
+
+# K3S Codec (TI PCM2901)
+ATTRS{idVendor}=="08bb", ATTRS{idProduct}=="2901", ENV{PULSE_IGNORE}="1"
+
+# ID 0b05:17f5 ASUSTek Computer, Inc.  This is the ASUS XONAR U5 audio
+# adapter attached to the LPPAN panadpter.  Don't allow PulseAudio to
+# take it otherwise we can't give it to quisk at 192k.
+ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="17f5", ENV{PULSE_IGNORE}="1"
+
+# FT-991: Texas Instruments PCM2903B Audio CODEC
+ATTRS{idVendor}=="08bb", ATTRS{idProduct}=="29b3", ENV{PULSE_IGNORE}="1"

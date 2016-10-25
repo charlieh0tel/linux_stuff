@@ -1,0 +1,34 @@
+#!/usr/bin/python
+
+PORT_SUFFIXES = ([
+  'S0', 'S1', 'S2', 'S3',
+  'USB0', 'USB1', 'USB2', 'USB3', 'USB4', 'USB5',
+  'ACM0', 'ACM1', 'ACM2', 'ACM3'
+])
+BAUDS = ([
+  1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
+])
+
+
+def generate_minirc(path, port, baud, rtscts=True):
+  with open(path, "w") as f:
+    f.write("pu port %s\n" % port)
+    f.write("pu baudrate %d\n" % baud)
+    f.write("pu minit\n")
+    f.write("pu mreset\n")
+    f.write("pu mhangup\n")
+    if not rtscts:
+      f.write("pu rtscts No\n")
+
+def generate_all_minircs():
+  for port_suffix in PORT_SUFFIXES:
+    port = "tty" + port_suffix
+    for baud in BAUDS:
+      for rtscts in [True, False]:
+        path = "minirc.%s-%d-8n1" % (port, baud)
+        if not rtscts: path += "-noflow"
+        print path
+        generate_minirc(path, "/dev/" + port, baud, rtscts=rtscts)
+
+if __name__ == "__main__":
+  generate_all_minircs()
