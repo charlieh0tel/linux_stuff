@@ -1,0 +1,10 @@
+$ORIGIN .
+$TTL 3000	; 50 minutes
+1.0.10.in-addr.arpa		IN SOA	moat.murgatroid.com. root.murgatroid.com. (
+				2018060801 ; serial
+				10800      ; refresh (3 hours)
+				3600       ; retry (1 hour)
+				604800     ; expire (1 week)
+				86400      ; minimum (1 day)
+				)
+			NS	moat.murgatroid.com.

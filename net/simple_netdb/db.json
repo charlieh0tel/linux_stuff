@@ -1,0 +1,869 @@
+[
+    {
+        "ip": [
+            "10.0.0.23"
+        ],
+        "mac_addr": [
+            "00:21:5a:80:01:ec"
+        ],
+        "name": "p2055dn"
+    },
+    {
+        "ip": [
+            "10.0.0.123"
+        ],
+        "mac_addr": [
+            "98:e7:f4:40:c6:bf"
+        ],
+        "name": "oj8710-wifi"
+    },
+    {
+        "ip": [
+            "10.0.0.29"
+        ],
+        "mac_addr": [
+            "00:11:d9:8a:cc:b5"
+        ],
+        "name": "tivo-bolt"
+    },
+    {
+        "ip": [
+            "10.0.0.28"
+        ],
+        "mac_addr": [
+            "50:1a:c5:73:ac:6d"
+        ],
+        "name": "xboxone"
+    },
+    {
+        "mac_addr": [
+            "00:00:24:c8:b1:14"
+        ],
+        "name": "old-nmoat-eth0",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:00:24:c8:b1:15"
+        ],
+        "name": "old-nmoat-eth1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:00:24:c8:b1:16"
+        ],
+        "name": "old-nmoat-eth2",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:00:24:c8:b1:17"
+        ],
+        "name": "old-nmoat-eth3",
+        "old": true
+    },
+    {
+        "aliases": [
+            "moat-eth0"
+        ],
+        "ip": [
+            "10.0.0.254"
+        ],
+        "mac_addr": [
+            "00:00:24:d1:41:dc"
+        ],
+        "name": "moat"
+    },
+    {
+        "mac_addr": [
+            "00:00:24:d1:41:dd"
+        ],
+        "name": "moat-eth1"
+    },
+    {
+        "mac_addr": [
+            "00:00:24:d1:41:de"
+        ],
+        "name": "moat-eth2"
+    },
+    {
+        "mac_addr": [
+            "00:00:24:d1:41:df"
+        ],
+        "name": "moat-eth3"
+    },
+    {
+        "mac_addr": [
+            "00:02:3b:00:4d:eb"
+        ],
+        "name": "75-101-8-1.dsl.static.sonic.net",
+        "wan": true
+    },
+    {
+        "mac_addr": [
+            "00:0a:fa:20:05:46"
+        ],
+        "name": "old-moat-adsl",
+        "old": true,
+        "wan": true
+    },
+    {
+        "aliases": [
+            "nmoat-0"
+        ],
+        "ip": [
+            "10.0.0.247"
+        ],
+        "mac_addr": [
+            "00:0d:b9:46:d9:20"
+        ],
+        "name": "nmoat"
+    },
+    {
+        "mac_addr": [
+            "00:0d:b9:46:d9:21"
+        ],
+        "name": "nmoat-1"
+    },
+    {
+        "mac_addr": [
+            "00:0d:b9:46:d9:22"
+        ],
+        "name": "nmoat-2"
+    },
+    {
+        "mac_addr": [
+            "00:0e:08:d8:b8:40"
+        ],
+        "name": "sipuraspa"
+    },
+    {
+        "mac_addr": [
+            "00:11:d9:32:27:74"
+        ],
+        "name": "tivo-lr",
+	"old": true
+    },
+    {
+        "mac_addr": [
+            "00:12:0e:6f:b7:c1"
+        ],
+        "name": "chumby"
+    },
+    {
+        "mac_addr": [
+            "00:15:60:44:ae:40"
+        ],
+        "name": "old-switch0",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:15:6d:4c:4c:3f"
+        ],
+        "name": "old-airrouter",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:15:6d:7c:c2:e2"
+        ],
+        "name": "old-powerapn-2",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:15:6d:7c:c3:37"
+        ],
+        "name": "old-powerapn-1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:15:af:db:9e:6e"
+        ],
+        "name": "old-eee",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1a:4b:53:d6:01"
+        ],
+        "name": "old-goober",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1a:4b:55:39:80"
+        ],
+        "name": "old-oj8500-wired",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1a:4b:56:f1:b7"
+        ],
+        "name": "old-oj8500-wifi",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1a:4b:7a:6b:d6"
+        ],
+        "name": "old-goofy7-wired",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1a:4b:ae:f7:ae"
+        ],
+        "name": "old-dsc-bs-01",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1d:7e:9e:d0:a3"
+        ],
+        "name": "old-wap4400n",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1d:e0:51:be:db"
+        ],
+        "name": "old-goofy7-wireless",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:1f:e1:82:3f:f3"
+        ],
+        "name": "old-lt-marcladi",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:20:4a:c4:fd:f0"
+        ],
+        "mobile": true,
+        "name": "old-cc4fdf0",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:21:6a:89:c6:ce"
+        ],
+        "name": "onion"
+    },
+    {
+        "mac_addr": [
+            "00:23:7d:06:70:75"
+        ],
+        "name": "old-snaggle",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:24:23:18:02:e1"
+        ],
+        "name": "old-insignia-01",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:24:d7:4e:15:48"
+        ],
+        "name": "old-artcamera2",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:25:00:e8:8f:a7"
+        ],
+        "name": "old-ipod-siel-1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:25:ae:77:75:27"
+        ],
+        "name": "old-xbox",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:26:9e:cc:80:93"
+        ],
+        "name": "old-mini-u-wired",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "00:50:c2:9d:90:39"
+        ],
+        "name": "cnsclockii"
+    },
+    {
+        "mac_addr": [
+            "00:a0:6e:04:15:1b"
+        ],
+        "name": "ts2100"
+    },
+    {
+        "mac_addr": [
+            "04:1e:64:25:43:23"
+        ],
+        "mobile": true,
+        "name": "kims-iphone"
+    },
+    {
+        "mac_addr": [
+            "08:00:27:9d:7c:a4"
+        ],
+        "name": "newman"
+    },
+    {
+        "mac_addr": [
+            "08:66:98:01:09:41"
+        ],
+        "mobile": true,
+        "name": "Kims-AppleWatch"
+    },
+    {
+        "mac_addr": [
+            "10:68:3f:8a:94:7c"
+        ],
+        "mobile": true,
+        "name": "android-d296493bdf62c481"
+    },
+    {
+        "ip": [
+            "10.0.0.2"
+        ],
+        "mac_addr": [
+            "10:98:36:a8:dc:64"
+        ],
+        "name": "snaggle"
+    },
+    {
+        "mac_addr": [
+            "10:98:36:a8:dc:66"
+        ],
+        "name": "idrac-531JND2"
+    },
+    {
+        "mac_addr": [
+            "10:bf:48:c2:3d:55"
+        ],
+        "mobile": true,
+        "name": "android-a42dcbe45f624305"
+    },
+    {
+        "mac_addr": [
+            "10:f0:05:8f:a4:71"
+        ],
+        "name": "shack"
+    },
+    {
+        "mac_addr": [
+            "14:7d:c5:6d:6e:f2"
+        ],
+        "name": "old-thermostat-6D-6E-F2",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "14:7d:c5:6d:7a:9b"
+        ],
+        "name": "old-thermostat-6D-7A-9B",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "14:dd:a9:ba:ee:32"
+        ],
+        "mobile": true,
+        "name": "android-4b6a5e8547d90187"
+    },
+    {
+        "mac_addr": [
+            "18:b4:30:16:32:b8"
+        ],
+        "mobile": true,
+        "name": "02AA01AC461405HF"
+    },
+    {
+        "mac_addr": [
+            "1c:62:b8:ab:f3:8b"
+        ],
+        "name": "android-3b23c6999b214f7d"
+    },
+    {
+        "mac_addr": [
+            "1c:6f:65:7a:08:cf"
+        ],
+        "name": "old-google-tv-wired",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "1c:91:48:59:fc:db"
+        ],
+        "mobile": true,
+        "name": "kimiphone"
+    },
+    {
+        "mac_addr": [
+            "1c:bd:b9:d7:93:f1"
+        ],
+        "name": "old-asus-ch",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "28:cf:e9:17:af:4b"
+        ],
+        "name": "charliehotel-macbookpro2"
+    },
+    {
+        "mac_addr": [
+            "28:ef:01:1a:f9:f1"
+        ],
+        "mobile": true,
+        "name": "old-kindle-ch",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "2c:44:01:cd:8b:6b"
+        ],
+        "mobile": true,
+        "name": "old-ch-galaxy-nexus-lte",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "30:52:cb:82:82:b9"
+        ],
+        "name": "GARLIC"
+    },
+    {
+        "mac_addr": [
+            "3c:15:c2:c0:23:56"
+        ],
+        "name": "Kims-MBP"
+    },
+    {
+        "mac_addr": [
+            "40:4e:36:1d:01:63"
+        ],
+        "mobile": true,
+        "name": "android-44291c99559939bc"
+    },
+    {
+        "mac_addr": [
+            "40:b0:fa:9d:97:e2"
+        ],
+        "mobile": true,
+        "name": "android-9e074c66ca4ebf9b"
+    },
+    {
+        "mac_addr": [
+            "44:09:b8:1e:8a:2c"
+        ],
+        "name": "Chromecast-Ultra"
+    },
+    {
+        "mac_addr": [
+            "44:2a:60:fb:c0:b2"
+        ],
+        "name": "charliehotel-macbookair"
+    },
+    {
+        "mac_addr": [
+            "48:d6:d5:79:4d:92"
+        ],
+        "name": "old-Google-Home"
+    },
+    {
+        "mac_addr": [
+            "48:ee:0c:80:3c:28"
+        ],
+        "name": "old-switch1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "58:55:ca:f1:31:6f"
+        ],
+        "name": "helium"
+    },
+    {
+        "ip": [
+            "10.0.0.190"
+        ],
+        "mac_addr": [
+            "5c:aa:fd:e3:51:92"
+        ],
+        "name": "sonos-kitchen"
+    },
+    {
+        "ip": [
+            "10.0.0.191"
+        ],
+        "mac_addr": [
+            "5c:aa:fd:e3:53:06"
+        ],
+        "name": "sonos-patio"
+    },
+    {
+        "ip": [
+            "10.0.0.192"
+        ],
+        "mac_addr": [
+            "5c:aa:fd:e3:d9:6a"
+        ],
+        "name": "sonos-lr-surround"
+    },
+    {
+        "mac_addr": [
+            "60:57:18:32:c1:f7"
+        ],
+        "name": "asus-ch"
+    },
+    {
+        "mac_addr": [
+            "64:bc:0c:43:66:7a"
+        ],
+        "name": "android-e7cc48547b8ff08"
+    },
+    {
+        "mac_addr": [
+            "70:18:8b:d0:e6:08"
+        ],
+        "name": "tvee5a3b8856a5"
+    },
+    {
+        "mac_addr": [
+            "78:ca:39:e7:9f:5f"
+        ],
+        "mobile": true,
+        "name": "riotbrrd-ipad"
+    },
+    {
+        "mac_addr": [
+            "78:cd:8e:65:a3:62"
+        ],
+        "name": "173-11-81-230-SFBA.hfc.comcastbusiness.net"
+    },
+    {
+        "mac_addr": [
+            "78:d6:f0:7e:3f:cf"
+        ],
+        "mobile": true,
+        "name": "old-ch-sprint-nexus-s",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "7c:61:93:fb:ef:64"
+        ],
+        "mobile": true,
+        "name": "old-ch-htc-inspire-4g",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "80:2a:a8:80:2a:15"
+        ],
+        "name": "old-ap0",
+        "old": true
+    },
+    {
+        "ip": [
+            "10.0.0.248"
+        ],
+        "mac_addr": [
+            "80:2a:a8:8d:f4:73"
+        ],
+        "name": "ubick"
+    },
+    {
+        "mac_addr": [
+            "80:2a:a8:90:f6:93"
+        ],
+        "name": "old-ap2-0",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "80:a5:89:53:d9:bf"
+        ],
+        "mobile": true,
+        "name": "android-92e95d3a295e0f08"
+    },
+    {
+        "mac_addr": [
+            "80:a5:89:6b:c4:61"
+        ],
+        "mobile": true,
+        "name": "android-8f3c62333e4bd474"
+    },
+    {
+        "mac_addr": [
+            "84:7a:88:16:ca:d7"
+        ],
+        "mobile": true,
+        "name": "android-a2c37f1972feb3a7"
+    },
+    {
+        "mac_addr": [
+            "88:53:95:45:75:d7"
+        ],
+        "mobile": true,
+        "name": "iPhone"
+    },
+    {
+        "mac_addr": [
+            "8c:3a:e3:71:18:aa"
+        ],
+        "mobile": true,
+        "name": "android-25d8a4e6c8aaecc0"
+    },
+    {
+        "mac_addr": [
+            "90:4c:e5:be:4e:c9"
+        ],
+        "name": "old-mini-u",
+        "old": true
+    },
+    {
+        "ip": [
+            "10.0.0.193"
+        ],
+        "mac_addr": [
+            "94:9f:3e:44:80:d8"
+        ],
+        "name": "sonos-lr-sub"
+    },
+    {
+        "ip": [
+            "10.0.0.194"
+        ],
+        "mac_addr": [
+            "94:9f:3e:63:96:c6"
+        ],
+        "name": "sons-lr-playbar"
+    },
+    {
+        "mac_addr": [
+            "94:fe:22:01:bf:7a"
+        ],
+        "name": "android-ae7c114d323a216d"
+    },
+    {
+        "mac_addr": [
+            "98:fe:94:44:f8:60"
+        ],
+        "name": "charliehotel-macbookair2"
+    },
+    {
+        "mac_addr": [
+            "9c:35:eb:23:6d:46"
+        ],
+        "mobile": true,
+        "name": "Kims-iPad"
+    },
+    {
+        "mac_addr": [
+            "9c:ad:ef:12:3e:26"
+        ],
+        "name": "old-obi100",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "a0:0b:ba:d9:e5:6d"
+        ],
+        "mobile": true,
+        "name": "android-2259d7ed13e98750"
+    },
+    {
+        "mac_addr": [
+            "a4:77:33:41:57:b8"
+        ],
+        "name": "Chromecast"
+    },
+    {
+        "mac_addr": [
+            "a4:77:33:f1:28:14"
+        ],
+        "name": "Chromecast-Audio"
+    },
+    {
+        "mac_addr": [
+            "ac:22:0b:46:ea:18"
+        ],
+        "mobile": true,
+        "name": "android-74276ec3a0f8efe6"
+    },
+    {
+        "mac_addr": [
+            "ac:22:0b:5c:48:c6"
+        ],
+        "mobile": true,
+        "name": "android-e7a3a40fa2eb930b"
+    },
+    {
+        "mac_addr": [
+            "b4:07:f9:1e:8f:21"
+        ],
+        "mobile": true,
+        "name": "ch-captivate"
+    },
+    {
+        "mac_addr": [
+            "b8:27:eb:73:95:9e"
+        ],
+        "name": "pi1"
+    },
+    {
+        "mac_addr": [
+            "b8:27:eb:c6:81:16"
+        ],
+        "name": "raspberrypi"
+    },
+    {
+        "mac_addr": [
+            "bc:ee:7b:4c:3e:07"
+        ],
+        "mobile": true,
+        "name": "android-b0905a671e1a0281"
+    },
+    {
+        "mac_addr": [
+            "d0:e7:82:7b:78:dd"
+        ],
+        "name": "chromecast-lr"
+    },
+    {
+        "mac_addr": [
+            "d8:30:62:9c:43:df"
+        ],
+        "mobile": true,
+        "name": "mladins-ipad"
+    },
+    {
+        "mac_addr": [
+            "dc:9f:db:fc:08:42"
+        ],
+        "name": "old-ap2-1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "dc:9f:db:fc:08:55"
+        ],
+        "name": "old-ap1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "e0:f8:47:34:23:74"
+        ],
+        "name": "charliehotel-macbookpro"
+    },
+    {
+        "ip": [
+            "10.0.0.253"
+        ],
+        "mac_addr": [
+            "f0:9f:c2:0a:26:e8"
+        ],
+        "name": "switch"
+    },
+    {
+        "ip": [
+            "10.0.0.252"
+        ],
+        "mac_addr": [
+            "f0:9f:c2:16:cc:1c"
+        ],
+        "name": "switch-2"
+    },
+    {
+        "ip": [
+            "10.0.0.249"
+        ],
+        "mac_addr": [
+            "f0:9f:c2:61:cf:6d"
+        ],
+        "name": "ap3"
+    },
+    {
+        "ip": [
+            "10.0.0.251"
+        ],
+        "mac_addr": [
+            "f0:9f:c2:61:cf:8d"
+        ],
+        "name": "ap2"
+    },
+    {
+        "ip": [
+            "10.0.0.250"
+        ],
+        "mac_addr": [
+            "f0:9f:c2:af:01:90"
+        ],
+        "name": "ap1"
+    },
+    {
+        "mac_addr": [
+            "f4:8c:50:cb:56:0b"
+        ],
+        "name": "thunk-glaptop2"
+    },
+    {
+        "mac_addr": [
+            "f4:ce:46:99:e8:78"
+        ],
+        "name": "old-calvin-wired",
+	"old": true
+    },
+    {
+        "mac_addr": [
+            "f4:f5:d8:be:23:b6"
+        ],
+        "name": "Google-Home"
+    },
+    {
+        "mac_addr": [
+            "f8:1a:67:5a:fc:28"
+        ],
+        "name": "old-openwrt1",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "f8:1a:67:5a:fc:7e"
+        ],
+        "name": "old-openwrt2",
+        "old": true
+    },
+    {
+        "mac_addr": [
+            "f8:cf:c5:aa:cd:8c"
+        ],
+        "mobile": true,
+        "name": "android-c89685d47d9486b1"
+    },
+    {
+        "mac_addr": [
+            "f8:f1:b6:71:4c:00"
+        ],
+        "mobile": true,
+        "name": "android-2c8516e3bab96fa8"
+    }
+]
