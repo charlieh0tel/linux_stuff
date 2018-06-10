@@ -143,13 +143,13 @@ def Main(argv):
     print "Verifying database..."
     n_warnings = VerifyDb(db)
     assert(n_warnings == 0)
-    with open("ethers", "w") as f:
+    with open("simple_db/ethers", "w") as f:
         print >>f, GenerateEthers(db)
-    with open("dhcpd.conf", "w") as f:
+    with open("simple_db/dhcpd.conf", "w") as f:
         print >>f, GenerateDHCPD(db)
-    with open("dns.zone", "w") as f:
+    with open("simple_db/dns.zone", "w") as f:
         print >>f, GenerateZone(db)
-    with open("dns_reverse.zone", "w") as f:
+    with open("simple_db/dns_reverse.zone", "w") as f:
         print >>f, GenerateReverseZone(db)
 
 if __name__ == "__main__":
