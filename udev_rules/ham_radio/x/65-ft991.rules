@@ -1,0 +1,3 @@
+# Replace xxx with the transceiver serial number.
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{ID_USB_INTERFACE_NUM}=="00", SYMLINK+="ttyUSB_ft991_enhanced", MODE="660", GROUP="plugdev"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK+="ttyUSB_ft991_standard", MODE="660", GROUP="plugdev"

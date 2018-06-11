@@ -1,0 +1,1 @@
+ATTR{idVendor}=="0925", ATTR{idProduct}=="3881", SYMLINK+="logic-%k", MODE="660", GROUP="plugdev"

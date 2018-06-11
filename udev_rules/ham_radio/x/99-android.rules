@@ -1,0 +1,2 @@
+ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee0", MODE="660", GROUP="plugdev"
+ATTR{idVendor}=="18d1", ATTR{idProduct}=="d001", MODE="660", GROUP="plugdev"

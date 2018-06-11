@@ -1,2 +1,1 @@
-# Replace xxx with the KAT500 serial number.
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="xxx", SYMLINK+="ttyUSB_kat500", MODE="660", GROUP="plugdev"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AL030WN6", SYMLINK+="ttyUSB_kat500", MODE="660", GROUP="plugdev"

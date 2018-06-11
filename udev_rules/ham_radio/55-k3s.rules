@@ -1,2 +1,1 @@
-# Replace xxx with the transceiver serial number.
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="xxx", SYMLINK+="ttyUSB_k3s", MODE="660", GROUP="plugdev"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A5041K7S", SYMLINK+="ttyUSB_k3s", MODE="660", GROUP="plugdev"
