@@ -1,0 +1,1 @@
+ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", ATTR{product}=="RigExpert AA-600", SYMLINK+="rigexpert-aa-600", MODE="660", GROUP="plugdev"
