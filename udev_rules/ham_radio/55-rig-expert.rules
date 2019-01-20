@@ -1,0 +1,1 @@
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{product}=="RigExpert*", SYMLINK+="ttyUSB_rigexpert", MODE="660", GROUP="plugdev"
