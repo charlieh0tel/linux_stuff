@@ -1,3 +1,8 @@
 # Replace xxx with the transceiver serial number.
-ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{ID_USB_INTERFACE_NUM}=="00", SYMLINK+="ttyUSB_ft991_enhanced", MODE="660", GROUP="plugdev"
-ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{ID_USB_INTERFACE_NUM}=="01", SYMLINK+="ttyUSB_ft991_standard", MODE="660", GROUP="plugdev"
+#
+# TODO: Maybe this could be made simpler.
+SUBSYSTEMS=="usb", ENV{.FT991_INTERFACE_NUM}="$attr{bInterfaceNumber}"
+
+ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{.FT991_MATCHES}="1"
+
+ENV{.FT991_MATCHES}=="1", ENV{.FT991_INTERFACE_NUM}!="", SYMLINK+="ttyUSB_ft991_$env{.FT991_INTERFACE_NUM}"

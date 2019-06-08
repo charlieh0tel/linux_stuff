@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-PORT_SUFFIXES = ([
-  'S0', 'S1', 'S2', 'S3',
-  'USB0', 'USB1', 'USB2', 'USB3', 'USB4', 'USB5',
-  'ACM0', 'ACM1', 'ACM2', 'ACM3'
-])
+PORT_SUFFIXES = (
+  ['ttyS%d' % d for d in range(4)] +
+  ['ttyUSB%d' % d for d in range(6)] +
+  ['ttyACM%d' % d for d in range(4)] +
+  ['rfcomm%d' % d for d in range(4)])
 BAUDS = ([
   1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
 ])
@@ -21,8 +21,7 @@ def generate_minirc(path, port, baud, rtscts=True):
       f.write("pu rtscts No\n")
 
 def generate_all_minircs():
-  for port_suffix in PORT_SUFFIXES:
-    port = "tty" + port_suffix
+  for port in PORT_SUFFIXES:
     for baud in BAUDS:
       for rtscts in [True, False]:
         path = "minirc.%s-%d-8n1" % (port, baud)

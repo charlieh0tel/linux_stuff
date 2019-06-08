@@ -1,2 +1,0 @@
-ATTR{idVendor}=="1df7", ATTR{idProduct}=="2500", SYMLINK+="sdrplay-%k", MODE="660", GROUP="plugdev"
-ATTR{idVendor}=="1df7", ATTR{idProduct}=="3010", SYMLINK+="sdrplay-%k", MODE="660", GROUP="plugdev"

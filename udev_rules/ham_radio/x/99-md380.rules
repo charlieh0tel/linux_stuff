@@ -1,2 +1,0 @@
-ACTION=="add", SUBSYSTEM=="usb_device", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="660", GROUP="plugdev"
-ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="df11", MODE="660", GROUP="plugdev"

@@ -23,6 +23,9 @@ class MacAddress(object):
         return ("MacAddress([" + ",".join("0x%02X" % x for x in self._bytes)
                 + "])")
 
+    def __cmp__(self, other):
+        return cmp(self._bytes, other._bytes)
+
 def FQDN(s):
     s = s.lower()
     if (s.find(".") == -1):
@@ -93,7 +96,7 @@ def Load(pathname):
 
 def GenerateEthers(db):
     s = []
-    for host in db:
+    for host in sorted(db, key=lambda v: v.get('mac_addr', [])):
         fqdn = host['fqdn']
         for mac in host['mac_addr']:
             line = "%s %s" % (mac, fqdn)
@@ -104,7 +107,7 @@ def GenerateEthers(db):
 
 def GenerateDHCPD(db):
     s = []
-    for host in db:
+    for host in sorted(db, key=lambda v: v.get('ip', [])):
         if host['old'] or host['mobile']:
             next
         fqdn = host['fqdn']
@@ -116,11 +119,11 @@ def GenerateDHCPD(db):
                          % (hostname, mac, host['ip'][0]))
     return ("group {\n  use-host-decl-names on;\n" +
             "\n".join(s) +
-            "}")
+            "\n}")
 
 def GenerateZone(db):
     s = []
-    for host in db:
+    for host in sorted(db, key=lambda v: v.get('ip', [])):
         if host['old']:
             next
         fqdn = host['fqdn']
@@ -130,7 +133,7 @@ def GenerateZone(db):
 
 def GenerateReverseZone(db):
     s = []
-    for host in db:
+    for host in sorted(db, key=lambda v: v.get('ip', [])):
         if host['old']:
             next
         fqdn = host['fqdn']
@@ -143,13 +146,13 @@ def Main(argv):
     print "Verifying database..."
     n_warnings = VerifyDb(db)
     assert(n_warnings == 0)
-    with open("simple_db/ethers", "w") as f:
+    with open("out/ethers", "w") as f:
         print >>f, GenerateEthers(db)
-    with open("simple_db/dhcpd.conf", "w") as f:
+    with open("out/dhcpd.conf", "w") as f:
         print >>f, GenerateDHCPD(db)
-    with open("simple_db/dns.zone", "w") as f:
+    with open("out/dns.zone", "w") as f:
         print >>f, GenerateZone(db)
-    with open("simple_db/dns_reverse.zone", "w") as f:
+    with open("out/dns_reverse.zone", "w") as f:
         print >>f, GenerateReverseZone(db)
 
 if __name__ == "__main__":
