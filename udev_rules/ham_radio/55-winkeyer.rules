@@ -1,1 +1,2 @@
-ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="AL038REM", SYMLINK+="ttyUSB_winkeyer", MODE="660", GROUP="plugdev"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="xxx", SYMLINK+="ttyUSB_winkeyer", MODE="660", GROUP="plugdev"
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="yyy", SYMLINK+="ttyUSB_winkeyer2", MODE="660", GROUP="plugdev"
