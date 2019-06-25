@@ -1,5 +1,5 @@
 SUBSYSTEMS=="usb", ENV{.FT991_INTERFACE_NUM}="$attr{bInterfaceNumber}"
 
-ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="xxx", ENV{.FT991_MATCHES}="1"
+ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea70", ATTRS{serial}=="008DE8C7", ENV{.FT991_MATCHES}="1"
 
-ENV{.FT991_MATCHES}=="1", ENV{.FT991_INTERFACE_NUM}!="", SYMLINK+="ttyUSB_ft991_$env{.FT991_INTERFACE_NUM}"
+SUBSYSTEM=="tty", ENV{.FT991_MATCHES}=="1", ENV{.FT991_INTERFACE_NUM}!="", SYMLINK+="ttyUSB_ft991_$env{.FT991_INTERFACE_NUM}", MODE="660", GROUP="plugdev"
