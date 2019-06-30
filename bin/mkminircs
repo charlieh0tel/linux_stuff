@@ -1,10 +1,15 @@
 #!/usr/bin/python
 
+_NSERIAL=4
+_NUSB=10
+_NACM=4
+_NRFCOMM=4
+
 PORT_SUFFIXES = (
-  ['ttyS%d' % d for d in range(4)] +
-  ['ttyUSB%d' % d for d in range(6)] +
-  ['ttyACM%d' % d for d in range(4)] +
-  ['rfcomm%d' % d for d in range(4)])
+  ['ttyS%d' % d for d in range(_NSERIAL + 1)] +
+  ['ttyUSB%d' % d for d in range(_NUSB + 1)] +
+  ['ttyACM%d' % d for d in range(_NACM + 1)] +
+  ['rfcomm%d' % d for d in range(_NRFCOMM + 1)])
 BAUDS = ([
   1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
 ])
