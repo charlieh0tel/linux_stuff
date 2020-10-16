@@ -37,37 +37,14 @@ def record(adevice):
     adevice.command("FORMAT:READ:TIME:TYPE ABS")
     adevice.command("FORMAT:READ:UNIT ON")
 
-    adevice.command("TRIG:SOURCE TIMER")
-    adevice.command("TRIG:TIM 0.5")
-    adevice.command("TRIG:COUNT INF")
-
-    #print("CONF='%s'\n" % adevice.ask("CONF?"))
-
-    #adevice.set_sre(0xc4)
-    #adevice.set_ese(0xff)
-
-    print("sre=0x%02X" % adevice.query_sre())
-    print("ese=0x%02X" % adevice.query_ese())
-    
     if not adevice.wait_for_complete(1):
         print("setup failed")
         return
     
     adevice.command("INIT")
-    """
     while True:
-        stb = int(adevice.ask("*STB?"))  # adevice.query_stb()
-        if stb == 0:
-            print(".", end='', flush=True)
-            continue
-        print()
-        print("stb=0x%02X" % stb)
-        print(adevice.ask("R?"))
-    """
-
-    while True:
-        print(adevice.ask("R?"))
-
+        print(adevice.ask("FETCH?"))
+        time.sleep(1)
 
 
 def main(argv):
