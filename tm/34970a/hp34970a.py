@@ -41,9 +41,8 @@ def record(adevice):
         print("setup failed")
         return
     
-    adevice.command("INIT")
     while True:
-        print(adevice.ask("FETCH?"))
+        print(adevice.ask("READ?"))
         time.sleep(1)
 
 
