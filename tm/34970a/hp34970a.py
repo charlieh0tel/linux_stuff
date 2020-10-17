@@ -8,8 +8,8 @@ import time
 
 import scpi
 import scpi.transports.rs232
+import scpi.transports.gpib.prologix
 import scpi.wrapper
-
 
 def record(adevice):
     print("setting instrument time")
@@ -42,34 +42,43 @@ def record(adevice):
         return
     
     while True:
-        print(adevice.ask("READ?"))
+        reading = adevice.ask("READ?")
+        print(reading)
         time.sleep(1)
 
 
 def main(argv):
     port = argv[1]
-    print(port)
-    transport = scpi.transports.rs232.get(port, baudrate=115200,
-                                          bytesize=serial.EIGHTBITS,
-                                          parity=serial.PARITY_NONE,
-                                          stopbits=serial.STOPBITS_ONE,
-                                          rtscts=True,
-                                          timeout=1)
+    gpib_address = argv[2]
+    print("%s %s" % (port, gpib_address))
+    if gpib_address == "RS232":
+        transport = scpi.transports.rs232.get(
+            port,
+            baudrate=115200,
+            bytesize=serial.EIGHTBITS,
+            parity=serial.PARITY_NONE,
+            stopbits=serial.STOPBITS_ONE,
+            rtscts=True,
+            timeout=1)
+    else:
+        transport = scpi.transports.gpib.prologix.get(port)
+        transport.set_address(int(gpib_address))
+
     protocol = scpi.SCPIProtocol(transport)
-    device = scpi.SCPIDevice(protocol)
-    adevice = scpi.wrapper.AIOWrapper(device)
+    aiodevice = scpi.SCPIDevice(protocol)
+    device = scpi.wrapper.AIOWrapper(aiodevice)
 
-    atexit.register(adevice.quit)
+    atexit.register(device.quit)
 
-    (make, model, serial_num, software_version) = adevice.identify()
+    (make, model, serial_num, software_version) = device.identify()
     print("%s %s\n" % (make, model))
-    adevice.reset()
+    device.reset()
 
     try:
-        record(adevice)
+        record(device)
     finally:
-        adevice.reset()
-        adevice.reset()
+        device.reset()
+        device.reset()
 
 if __name__ == "__main__":
     main(sys.argv)
