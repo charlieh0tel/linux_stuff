@@ -11,38 +11,58 @@ import scpi.transports.rs232
 import scpi.transports.gpib.prologix
 import scpi.wrapper
 
-def record(adevice):
-    print("setting instrument time")
-    now = time.gmtime()
-    adevice.command("SYSTEM:DATE %s" % time.strftime("%Y,%m,%d", now))
-    # this will fail if we catch a leapsecond.
-    adevice.command("SYSTEM:TIME %s" % time.strftime("%H,%M,%S", now))
 
-    (y, mo, d) = adevice.ask("SYSTEM:DATE?").split(',')
-    (h, m, s) = adevice.ask("SYSTEM:TIME?").split(',')
+class HP34970a(scpi.SCPIDevice):
+    async def configure_thermocouple(self, channels, probe_type='K', unit=None):
+        await self.command("CONF:TEMP TCOUPLE,%s,%s" % (probe_type, self._channel_string(channels)))
+        if unit is not None:
+            await self.command("UNIT:TEMP %s,%s" % (unit, self._channel_string(channels)))
+        
+    async def configure_vdc(self, channels, vrange=None):
+        await self.command("CONF:VOLT:DC %s" % self._channel_string(channels))
+        if vrange is not None:
+            await self.command("VOLT:DC:RANG %s,%s" % (vrange, self._channel_string(channels)))
+
+    async def set_scan(self, channels):
+        await self.command("ROUTE:SCAN %s" % self._channel_string(channels))
+    
+    async def set_instrument_time(self):
+        now = time.gmtime()
+        await self.command("SYSTEM:DATE %s" % time.strftime("%Y,%m,%d", now))
+        # this will fail if we catch a leapsecond.
+        await self.command("SYSTEM:TIME %s" % time.strftime("%H,%M,%S", now))
+
+    @staticmethod
+    def _channel_string(channels):
+        return "(@%s)" % ",".join(map(str, channels))
+
+
+def record(device):
+    print("setting instrument time")
+    device.set_instrument_time()
+
+    (y, mo, d) = device.ask("SYSTEM:DATE?").split(',')
+    (h, m, s) = device.ask("SYSTEM:TIME?").split(',')
     print("instrument time reads as %s/%s/%s %s:%s:%s"
           % (mo, d, y, h, m, s))
 
-    adevice.command("CONF:TEMP TCOUPLE,K,(@101)")
-    adevice.command("UNIT:TEMP C")
-    adevice.command("CONF:VOLT:DC (@118, 120)")
-    adevice.command("VOLT:DC:RANG 1V,(@118)")
-    adevice.command("VOLT:DC:RANG 10V,(@120)")
+    device.configure_thermocouple([101], probe_type='K', unit='C')
+    device.configure_vdc([118], vrange="1V")
+    device.configure_vdc([120], vrange="10V")
+    device.set_scan([101, 118, 120])
 
-    adevice.command("ROUTE:SCAN (@101, 118, 120)")
+    #device.command("FORMAT:READ:ALAR ON")
+    #device.command("FORMAT:READ:CHAN ON")
+    device.command("FORMAT:READ:TIME ON")
+    device.command("FORMAT:READ:TIME:TYPE ABS")
+    device.command("FORMAT:READ:UNIT ON")
 
-    #adevice.command("FORMAT:READ:ALAR ON")
-    #adevice.command("FORMAT:READ:CHAN ON")
-    adevice.command("FORMAT:READ:TIME ON")
-    adevice.command("FORMAT:READ:TIME:TYPE ABS")
-    adevice.command("FORMAT:READ:UNIT ON")
-
-    if not adevice.wait_for_complete(1):
+    if not device.wait_for_complete(1):
         print("setup failed")
         return
     
     while True:
-        reading = adevice.ask("READ?")
+        reading = device.ask("READ?")
         print(reading)
         time.sleep(1)
 
@@ -65,7 +85,7 @@ def main(argv):
         transport.set_address(int(gpib_address))
 
     protocol = scpi.SCPIProtocol(transport)
-    aiodevice = scpi.SCPIDevice(protocol)
+    aiodevice = HP34970a(protocol)
     device = scpi.wrapper.AIOWrapper(aiodevice)
 
     atexit.register(device.quit)
