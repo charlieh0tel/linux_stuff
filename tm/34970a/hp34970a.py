@@ -31,7 +31,7 @@ class HP34970a(scpi.SCPIDevice):
     async def set_instrument_time(self):
         now = time.gmtime()
         await self.command("SYSTEM:DATE %s" % time.strftime("%Y,%m,%d", now))
-        # This will fail if we catch a leapsecond.
+        # This will fail if we caught a leapsecond.
         await self.command("SYSTEM:TIME %s" % time.strftime("%H,%M,%S", now))
 
     async def get_instrument_time(self):
@@ -51,13 +51,6 @@ def record(device):
 
     inst_time = device.get_instrument_time()
     print("instrument time reads as (Zulu)", time.strftime("%m/%d/%Y %H:%M:%S", inst_time))
-
-    """
-    (y, mo, d) = device.ask("SYSTEM:DATE?").split(',')
-    (h, m, s) = device.ask("SYSTEM:TIME?").split(',')
-    print("instrument time reads as %s/%s/%s %s:%s:%s"
-          % (mo, d, y, h, m, s))
-    """
 
     device.configure_thermocouple([101], probe_type='K', unit='C')
     device.configure_vdc([118], vrange="1V")
