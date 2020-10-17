@@ -2,6 +2,8 @@
 
 import asyncio
 import atexit
+import calendar
+import decimal
 import serial
 import sys
 import time
@@ -29,8 +31,14 @@ class HP34970a(scpi.SCPIDevice):
     async def set_instrument_time(self):
         now = time.gmtime()
         await self.command("SYSTEM:DATE %s" % time.strftime("%Y,%m,%d", now))
-        # this will fail if we catch a leapsecond.
+        # This will fail if we catch a leapsecond.
         await self.command("SYSTEM:TIME %s" % time.strftime("%H,%M,%S", now))
+
+    async def get_instrument_time(self):
+        # There is bug here if there is a rollover between calls.
+        ymd = await self.ask("SYSTEM:DATE?")
+        (hms, fraction_s) = (await self.ask("SYSTEM:TIME?")).split('.')
+        return time.strptime(ymd + " " + hms, "%Y,%m,%d %H,%M,%S")
 
     @staticmethod
     def _channel_string(channels):
@@ -41,10 +49,15 @@ def record(device):
     print("setting instrument time")
     device.set_instrument_time()
 
+    inst_time = device.get_instrument_time()
+    print("instrument time reads as (Zulu)", time.strftime("%m/%d/%Y %H:%M:%S", inst_time))
+
+    """
     (y, mo, d) = device.ask("SYSTEM:DATE?").split(',')
     (h, m, s) = device.ask("SYSTEM:TIME?").split(',')
     print("instrument time reads as %s/%s/%s %s:%s:%s"
           % (mo, d, y, h, m, s))
+    """
 
     device.configure_thermocouple([101], probe_type='K', unit='C')
     device.configure_vdc([118], vrange="1V")
