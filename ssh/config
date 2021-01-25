@@ -1,0 +1,13 @@
+Host draws
+     User pi
+Host portal
+     HostName portal-murgatroid-com.westus.cloudapp.azure.com
+Host ts-portal
+     Hostname 100.100.156.127
+Host ts-shack
+     HostName 100.72.174.54
+Host ts-snaggle
+     HostName 100.64.22.106
+Host ts-draws
+     User pi
+     HostName 100.83.87.106
