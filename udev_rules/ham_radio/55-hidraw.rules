@@ -1,0 +1,2 @@
+# DRA-70 PTT
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0d8c", ATTRS{idProduct}=="013a",  GROUP="audio", MODE="0660", SYMLINK+="dra-70_ptt"
