@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 _NSERIAL=4
 _NUSB=10
@@ -31,7 +31,7 @@ def generate_all_minircs():
       for rtscts in [True, False]:
         path = "minirc.%s-%d-8n1" % (port, baud)
         if not rtscts: path += "-noflow"
-        print path
+        print(path)
         generate_minirc(path, "/dev/" + port, baud, rtscts=rtscts)
 
 if __name__ == "__main__":
