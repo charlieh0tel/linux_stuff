@@ -25,7 +25,7 @@ fi
 
 partx "${DEVICE}"
 sfdisk -d "${DEVICE}" > part.sfdisk
-dd if="${DEVICE}" of=boot.sect count=1 status=none
+dd if="${DEVICE}" of=mbrgrub.raw count=2048 status=none
 e2image -ra -p "${EXTPART}" fs.raw
 
 exit 0

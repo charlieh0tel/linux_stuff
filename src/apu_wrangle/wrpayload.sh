@@ -18,12 +18,6 @@ if [ \! -e "${DEVICE}" ]; then
     exit 1
 fi
 
-if [ -e "${EXTPART}" ]; then
-    echo "$0: ${DEVICE} exists" 2>&1
-    exit 1
-fi
-
-
 echo "Erasing."
 blockdev --flushbufs "${DEVICE}"
 hdparm --user-master u --security-disable pass "${DEVICE}" 2>/dev/null || :;
@@ -39,12 +33,13 @@ if [ \! -e "${DEVICE}" ]; then
     exit 1
 fi
 
+# Write mbr/grub.
+echo "Writing MBR."
+dd if=mbrgrub.raw of="${DEVICE}" status=none
+
 echo "Writing part table."
 sfdisk --no-tell-kernel "${DEVICE}" < part.sfdisk
 
-# MBR has grub in it.  Same part table as above.
-echo "Writing MBR."
-dd if=boot.sect of="${DEVICE}" status=none
 
 blockdev --rereadpt "${DEVICE}"
 
