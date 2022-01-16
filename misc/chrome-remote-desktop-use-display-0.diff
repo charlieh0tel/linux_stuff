@@ -1,0 +1,27 @@
+78c78
+< DEFAULT_SIZES = "1600x1200,3840x2560"
+---
+> DEFAULT_SIZES = "1920x1080"
+82c82
+< DEFAULT_SIZE_NO_RANDR = "1600x1200"
+---
+> DEFAULT_SIZE_NO_RANDR = "1920x1080"
+104c104
+< FIRST_X_DISPLAY_NUMBER = 20
+---
+> FIRST_X_DISPLAY_NUMBER = 0
+436,437c436,437
+<     while os.path.exists(X_LOCK_FILE_TEMPLATE % display):
+<       display += 1
+---
+>     #while os.path.exists(X_LOCK_FILE_TEMPLATE % display):
+>     #  display += 1
+723,724c723,727
+<     self._launch_x_server(x_args)
+<     self._launch_x_session()
+---
+>     #self._launch_x_server(x_args)
+>     #self._launch_x_session()
+>     display = 0
+>     self.child_env["DISPLAY"] = ":%d" % display
+>     self.child_env["CHROME_REMOTE_DESKTOP_SESSION"] = "1"
