@@ -1,0 +1,2 @@
+server clock.sjc.he.net iburst xleave
+#server ntp.sonic.net iburst xleave
