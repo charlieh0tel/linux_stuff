@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="fafadb0dbeb1eb11a031b87718997a59", SYMLINK+="ttyUSB_kx2", MODE="660", GROUP="plugdev"
