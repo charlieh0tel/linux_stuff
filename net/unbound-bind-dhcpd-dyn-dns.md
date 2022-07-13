@@ -192,7 +192,7 @@ Make a reverse zone file for your static hosts.
     			NS	$NAMESERVER.foobar.internal.
 
 
-### /var/lib/bind/dyn.foobar.internal.zone
+## /var/lib/bind/dyn.foobar.internal.zone
 
 If bind doesn't create this for you, make an empty zone file with just
 an SOA for dyn.foobar.internal.  You should never have to touch this
@@ -245,7 +245,7 @@ file again.
       ddns-rev-domainname "in-addr.arpa.";
     }
 
-## Deal with dumb dhcp clients (often there are many), or give a dhcp-enabled host a "static" IP address
+## How to deal with dumb dhcp clients (often there are many) and how to give a dhcp-enabled host a "static" IP address
 
 Add to /etc/dhcp/dhcpd.conf:
 
