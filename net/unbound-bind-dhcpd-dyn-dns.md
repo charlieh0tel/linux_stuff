@@ -11,7 +11,7 @@ IPv6: no
 
 Note: this recipe likely doesn't work properly with IPv6 enabled.
 
-All clients are configured to get DNS from unbound.
+All clients are configured to use unbound for DNS.
 
 Bind is configured to handle for the local static and dynamic domains
 (forward and reverse).  DHCP and bind are configured and work in the
@@ -24,7 +24,8 @@ have to be diligent about freezing and thawing the zones and be OK
 with the dynamic hosts getting all mixed up with the static hosts.)
 
 The main trick required is to run bind on 127.0.0.2 and configure
-unbound to go there for the forward and reverse domains.
+unbound to go to bind at that addy for the forward and reverse local
+domains.
 
 (You could probably replace bind+dhcpd with dnsmasq, supposing you can
 stomach the dnsmasq config file.)
