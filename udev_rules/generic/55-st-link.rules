@@ -1,0 +1,2 @@
+# ST-LINK V2.1
+ATTR{idVendor}=="0483", ATTR{idProduct}=="374b", MODE="660", GROUP="plugdev"
