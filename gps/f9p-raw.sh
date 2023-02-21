@@ -4,9 +4,13 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-export UBXOPTS="-P 22"
+# This is for F9P.
+
+export UBXOPTS="-P 27"
 
 gpsctl -s 460800
+
+ubxtool -p RESET
 
 ubxtool -d NMEA
 ubxtool -e BINARY
@@ -17,8 +21,7 @@ ubxtool -d GALILEO
 ubxtool -d SBAS
 ubxtool -e GPS
 
-
-ubxtool -p CFG-GNSS
+#ubxtool -p CFG-GNSS
 
 ubxtool -e RAWX
 
