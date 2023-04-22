@@ -73,6 +73,7 @@ $exp->expect($timeout,
 		      shift @lines;
 		      my $status_screen = join("\n", @lines);
 		      $status_screen =~ s/\r//g;
+		      $win->clear;
 		      $win->addstr(0, 0, $status_screen);
 		      $win->refresh;
 		  }
