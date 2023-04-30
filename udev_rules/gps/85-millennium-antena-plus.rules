@@ -1,0 +1,3 @@
+# Millennium Antenna Plus
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="8116", RUN+="/sbin/modprobe cp210x", RUN+="/bin/sh -c 'echo -n 10c4 8116 >/sys/bus/usb-serial/drivers/cp210x/new_id'"
+
