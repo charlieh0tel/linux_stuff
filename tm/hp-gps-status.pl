@@ -49,10 +49,10 @@ $port->write_settings    || die "no settings";
 my $timeout = 5;
 my $status = 0;
 
-my $win = new Curses;
-
 my $exp = Expect->exp_init(\*FH);
 $exp->send("*CLS\n");
+
+my $win = new Curses;
 
 $exp->expect($timeout,
 	     [
