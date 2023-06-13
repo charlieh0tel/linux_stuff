@@ -22,6 +22,8 @@ def generate_minirc(path, port, baud, rtscts=True):
     f.write("pu minit\n")
     f.write("pu mreset\n")
     f.write("pu mhangup\n")
+    f.write("pu backspace DEL\n");
+
     if not rtscts:
       f.write("pu rtscts No\n")
 
