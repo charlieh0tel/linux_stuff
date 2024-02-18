@@ -6,6 +6,10 @@ set -o nounset
 
 . /etc/os-release
 
+if [ "${ID}" == "raspbian" ]; then
+    ID="${ID_LIKE}"
+fi
+
 KEYRING="/usr/share/keyrings/netdata-keyring.gpg"
 
 curl https://repo.netdata.cloud/netdatabot.gpg.key | gpg --dearmor > "${KEYRING}"  || :;
@@ -35,4 +39,7 @@ chown -R netdata:netdata "${CLOUD_DIR}"
 chmod 0775 "${CLOUD_DIR}"
 chmod 0664 "${CLOUD_CONF}"
 
+touch /etc/netdata/.opt-out-from-anonymous-statistics
+
 systemctl restart netdata
+
