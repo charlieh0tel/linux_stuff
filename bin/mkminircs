@@ -13,28 +13,51 @@ PORT_SUFFIXES = (
 BAUDS = ([
   1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
 ])
+BITS = [7, 8]
+PARITIES = ['n', 'e']
 
+class PortConfig:
+  def __init__(self, port, baud, rtscts, bits, parity):
+    self.port = port
+    self.baud = baud
+    self.rtscts = rtscts
+    self.bits = bits
+    self.parity = parity
 
-def generate_minirc(path, port, baud, rtscts=True):
-  with open(path, "w") as f:
-    f.write("pu port %s\n" % port)
-    f.write("pu baudrate %d\n" % baud)
-    f.write("pu minit\n")
-    f.write("pu mreset\n")
-    f.write("pu mhangup\n")
-    f.write("pu backspace DEL\n");
+  def path(self):
+    path = "minirc.%s-%d-%d%c1" % (self.port, self.baud, self.bits, self.parity)
+    if not self.rtscts: path += "-noflow"
+    return path
 
-    if not rtscts:
-      f.write("pu rtscts No\n")
+  def config(self):
+    s = ""
+    s += "pu port %s\n" % ("/dev/" + self.port)
+    s += "pu baudrate %d\n" % self.baud
+    s += "pu parity %c\n" % self.parity
+    s += "pu bits %d\n" % self.bits
+    s += "pu minit\n"
+    s += "pu mreset\n"
+    s += "pu mhangup\n"
+    s += "pu backspace DEL\n"
+    s += "pu rtscts %s" % ("Yes" if self.rtscts else "No")
+
+    return s
+
+  def write_shell(self):
+    print(f"cat >/etc/minicom/{self.path()} <<EOF")
+    # Should escape this but so far not needed.
+    print(self.config())
+    print("EOF")
 
 def generate_all_minircs():
   for port in PORT_SUFFIXES:
     for baud in BAUDS:
       for rtscts in [True, False]:
-        path = "minirc.%s-%d-8n1" % (port, baud)
-        if not rtscts: path += "-noflow"
-        print(path)
-        generate_minirc(path, "/dev/" + port, baud, rtscts=rtscts)
+        for bits in BITS:
+          for parity in PARITIES:
+            p = PortConfig(port, baud, rtscts, bits, parity)
+            p.write_shell()
+            
 
 if __name__ == "__main__":
   generate_all_minircs()
