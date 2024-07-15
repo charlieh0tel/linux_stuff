@@ -24,5 +24,9 @@ shift
 
 FREQUENCY="${CHANNEL_FREQUENCY_MAP["${CHANNEL}"]}"
 
-rtl_fm "$@" -f ${FREQUENCY} -s ${RATE} | \
+rtl_fm "$@" -f "${FREQUENCY}" -s ${RATE} | \
     play -t raw -r "${RATE}" -es -b 16 -c 1 -V1 -
+
+# Local Variables:
+# compile-command: "shellcheck play_noaa.sh"
+# End:
