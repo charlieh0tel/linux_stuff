@@ -18,11 +18,9 @@ declare -rA CHANNEL_FREQUENCY_MAP=(
 )
 
 declare -r RATE=11025
-
-CHANNEL="$1"
+declare -r CHANNEL="$1"
 shift
-
-FREQUENCY="${CHANNEL_FREQUENCY_MAP["${CHANNEL}"]}"
+declare -r FREQUENCY="${CHANNEL_FREQUENCY_MAP["${CHANNEL}"]}"
 
 rtl_fm "$@" -f "${FREQUENCY}" -s ${RATE} | \
     play -t raw -r "${RATE}" -es -b 16 -c 1 -V1 -
