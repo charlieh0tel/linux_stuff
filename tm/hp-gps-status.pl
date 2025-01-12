@@ -54,6 +54,19 @@ $exp->send("*CLS\n");
 
 my $win = new Curses;
 
+sub cleanup {
+    endwin;
+}
+
+END {
+    cleanup;
+};
+
+$SIG{INT}  = $SIG{TERM} = sub {
+    cleanup;
+    exit 1;
+};
+
 $exp->expect($timeout,
 	     [
 	      qr'E-[0-9][0-9][0-9]> $',
