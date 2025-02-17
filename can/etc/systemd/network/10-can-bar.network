@@ -1,0 +1,7 @@
+[Match]
+Name=can_bar
+
+[CAN]
+BitRate=100000
+FDMode=False
+RestartSec=10s

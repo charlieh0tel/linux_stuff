@@ -1,0 +1,5 @@
+[Match]
+Property=ID_SERIAL_SHORT=0035004A4130500B20343758
+
+[Link]
+Name=can_bar
