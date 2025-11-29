@@ -1,0 +1,9 @@
+#
+
+# Blacklist
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="05c6", ATTR{idProduct}=="9205", GOTO="power_usb_rules_end"
+
+# enable
+ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"
+
+LABEL="usb_power_save_rules_end"
