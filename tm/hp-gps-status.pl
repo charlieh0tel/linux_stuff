@@ -55,6 +55,13 @@ $exp->send("*CLS\n");
 my $win = new Curses;
 
 sub cleanup {
+    if (defined $exp) {
+	$exp->soft_close();
+	$exp = undef;
+    }
+    if (tied *FH) {
+	untie *FH;
+    }
     endwin;
 }
 
