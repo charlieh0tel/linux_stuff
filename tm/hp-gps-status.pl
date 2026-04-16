@@ -62,6 +62,10 @@ sub cleanup {
     if (tied *FH) {
 	untie *FH;
     }
+    # Expect stashes \*FH internally; its DESTROY during global
+    # destruction will close(FH) after we've untied. Reopen to
+    # /dev/null so that stray close doesn't warn.
+    open(FH, '<', '/dev/null');
     endwin;
 }
 
