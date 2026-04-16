@@ -55,8 +55,11 @@ $exp->send("*CLS\n");
 my $win = new Curses;
 
 sub cleanup {
+    endwin;
     if (defined $exp) {
-	$exp->soft_close();
+	# hard_close, not soft_close: soft_close blocks 15s waiting
+	# for an EOF that a serial port will never send.
+	$exp->hard_close();
 	$exp = undef;
     }
     if (tied *FH) {
@@ -66,7 +69,6 @@ sub cleanup {
     # destruction will close(FH) after we've untied. Reopen to
     # /dev/null so that stray close doesn't warn.
     open(FH, '<', '/dev/null');
-    endwin;
 }
 
 END {
@@ -74,6 +76,8 @@ END {
 };
 
 $SIG{INT}  = $SIG{TERM} = sub {
+    # If cleanup stalls, a second ^C hard-kills.
+    $SIG{INT} = $SIG{TERM} = 'DEFAULT';
     cleanup;
     exit 1;
 };
