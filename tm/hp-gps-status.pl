@@ -61,6 +61,11 @@ sub cleanup {
 	# for an EOF that a serial port will never send.
 	$exp->hard_close();
 	$exp = undef;
+	# exp_init did `bless \*FH, 'Expect'`, so during global
+	# destruction Expect::DESTROY would fire on *FH and call
+	# close() on the already-closed fd. Rebless into a class
+	# with no DESTROY to suppress that.
+	bless \*FH, 'main';
     }
     # $port holds an inner reference to the tied object; drop it
     # so untie doesn't warn about "inner references still exist".
@@ -68,10 +73,6 @@ sub cleanup {
     if (tied *FH) {
 	untie *FH;
     }
-    # Expect stashes \*FH internally; its DESTROY during global
-    # destruction will close(FH) after we've untied. Reopen to
-    # /dev/null so that stray close doesn't warn.
-    open(FH, '<', '/dev/null');
 }
 
 END {
