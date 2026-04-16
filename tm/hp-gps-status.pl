@@ -62,6 +62,9 @@ sub cleanup {
 	$exp->hard_close();
 	$exp = undef;
     }
+    # $port holds an inner reference to the tied object; drop it
+    # so untie doesn't warn about "inner references still exist".
+    $port = undef;
     if (tied *FH) {
 	untie *FH;
     }
