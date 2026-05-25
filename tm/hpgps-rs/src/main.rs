@@ -1,6 +1,10 @@
+use derive_more::Display;
+use derive_more::FromStr;
 use regex::Regex;
+use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
+#[display("GpsTracking (prn={prn}, el={el}, zz={az}, ss={ss})")]
 struct GpsTracking {
     prn: u32,
     el: u32,
@@ -8,19 +12,22 @@ struct GpsTracking {
     ss: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
+#[display("GpsNotTracking (prn={prn}, el={el}, zz={az})")]
 struct GpsNotTracking {
     prn: u32,
     el: u32,
     az: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Display, FromStr)]
 enum HealthState {
     Ok,
     Fail,
     Unknown,
 }
+
+/*
 
 impl HealthState {
     fn from_str(state: &str) -> Self {
@@ -31,8 +38,12 @@ impl HealthState {
         }
     }
 }
+*/
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
+#[display(
+    "HealthMonitor (self_test={self_test}, int_pwr={int_pwr}, oven_pwr={oven_pwr}, ocxo={ocxo} efc={efc} gps_rcv={gps_rcv})"
+)]
 struct HealthMonitor {
     self_test: HealthState,
     int_pwr: HealthState,
@@ -42,7 +53,7 @@ struct HealthMonitor {
     gps_rcv: HealthState,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
 enum SmartClockMode {
     LockedToGps,
     Recovery,
@@ -51,14 +62,19 @@ enum SmartClockMode {
     Unknown,
 }
 
-impl SmartClockMode {
-    fn from_str(mode: &str) -> Self {
+#[derive(Debug)]
+struct ParseSmartClockModeError;
+
+impl FromStr for SmartClockMode {
+    type Err = ParseSmartClockModeError;
+
+    fn from_str(mode: &str) -> Result<Self, Self::Err> {
         match mode {
-            "Locked to GPS" => SmartClockMode::LockedToGps,
-            "Recovery" => SmartClockMode::Recovery,
-            "Holdover" => SmartClockMode::Holdover,
-            "Power-up" => SmartClockMode::PowerUp,
-            _ => SmartClockMode::Unknown,
+            "Locked to GPS" => Ok(SmartClockMode::LockedToGps),
+            "Recovery" => Ok(SmartClockMode::Recovery),
+            "Holdover" => Ok(SmartClockMode::Holdover),
+            "Power-up" => Ok(SmartClockMode::PowerUp),
+            _ => Err(ParseSmartClockModeError),
         }
     }
 }
@@ -94,15 +110,12 @@ scpi >
 
     // Extract SmartClock Mode
     let mode_re = Regex::new(r">>\s*(Locked to GPS|Recovery|Holdover|Power-up)").unwrap();
-    let smartclock_mode = if let Some(captures) = mode_re.captures(input) {
-        SmartClockMode::from_str(&captures[1])
-    } else {
-        SmartClockMode::Unknown
-    };
-    println!("SmartClock Mode: {:?}", smartclock_mode);
+    let smartclock_mode = mode_re.captures(input).unwrap()[1]
+        .parse()
+        .unwrap_or(SmartClockMode::Unknown);
 
     // Extract GPS tracking PRNs
-    let tracking_re = Regex::new(r"(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+").unwrap();
+    let tracking_re = Regex::new(r"(?m)^[ \t]+(\d+)[ \t]+(\d+)[ \t]+(\d+)[ \t]+(\d+)").unwrap();
     let mut tracking_prns: Vec<GpsTracking> = Vec::new();
     for captures in tracking_re.captures_iter(input) {
         let prn = captures[1].parse::<u32>().unwrap();
@@ -113,7 +126,13 @@ scpi >
     }
 
     // Extract GPS not tracking PRNs
-    let not_tracking_re = Regex::new(r"\*\d+\s+(\d+)\s+(\d+)\s+(\d+)").unwrap();
+    //
+    // This is not right ... we might not have any tracked SVs and
+    // what's more trying to parse this with regex'es is dumb.
+    let not_tracking_re = Regex::new(
+        r"(?m)^[ \t]+\d+[ \t]+\d+[ \t]+\d+[ \t]+\d+[ \t]*\*?[ \t]*(\d+)[ \t]+(\d+)[ \t]+(\d+)",
+    )
+    .unwrap();
     let mut not_tracking_prns: Vec<GpsNotTracking> = Vec::new();
     for captures in not_tracking_re.captures_iter(input) {
         let prn = captures[1].parse::<u32>().unwrap();
@@ -124,17 +143,17 @@ scpi >
 
     // Extract Health Monitor states
     let health_monitor_re = Regex::new(
-        r"Self Test:\s+(\w+)\s+Int Pwr:\s+(\w+)\s+Oven Pwr:\s+(\w+)\s+OCXO:\s+(\w+)\s+EFC:\s+(\w+)\s+GPS Rcv:\s+(\w+)",
+        r"(?m)^Self Test:[ \t]+(\w+)[ \t]+Int Pwr:[ \t]+(\w+)[ \t]+Oven Pwr:[ \t]+(\w+)[ \t]+OCXO:[ \t]+(\w+)[ \t]+EFC:[ \t]+(\w+)[ \t]+GPS Rcv:[ \t]+(\w+)",
     )
     .unwrap();
     let health_monitor = if let Some(captures) = health_monitor_re.captures(input) {
         HealthMonitor {
-            self_test: HealthState::from_str(&captures[1]),
-            int_pwr: HealthState::from_str(&captures[2]),
-            oven_pwr: HealthState::from_str(&captures[3]),
-            ocxo: HealthState::from_str(&captures[4]),
-            efc: HealthState::from_str(&captures[5]),
-            gps_rcv: HealthState::from_str(&captures[6]),
+            self_test: captures[1].parse().unwrap(),
+            int_pwr: captures[2].parse().unwrap(),
+            oven_pwr: captures[3].parse().unwrap(),
+            ocxo: captures[4].parse().unwrap(),
+            efc: captures[5].parse().unwrap(),
+            gps_rcv: captures[6].parse().unwrap(),
         }
     } else {
         HealthMonitor {
@@ -147,8 +166,16 @@ scpi >
         }
     };
 
-    // Output parsed results
-    println!("Tracking PRNs: {:?}", tracking_prns);
-    println!("Not Tracking PRNs: {:?}", not_tracking_prns);
-    println!("Health Monitor: {:?}", health_monitor);
+    println!("SmartClock Mode: {smartclock_mode:#?}");
+    println!(
+        "Tracking PRNs (n={0}): {1:#?}",
+        tracking_prns.len(),
+        tracking_prns
+    );
+    println!(
+        "Not Tracking PRNs (n={0}): {1:#?})",
+        not_tracking_prns.len(),
+        not_tracking_prns
+    );
+    println!("Health Monitor: {health_monitor:#?}");
 }
