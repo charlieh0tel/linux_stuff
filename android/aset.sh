@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -o xtrace
 set -o errexit
@@ -18,7 +18,7 @@ put() {
 }
 
 adb root
-adb shell date @$(date +%s)
+adb shell date "@$(date +%s)"
 
 # doesn't seem to work
 put global auto_time_zone 0

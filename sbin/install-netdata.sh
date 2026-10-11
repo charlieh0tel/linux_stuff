@@ -4,6 +4,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+# shellcheck source=/dev/null
 . /etc/os-release
 
 if [ "${ID}" == "raspbian" ]; then

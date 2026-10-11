@@ -11,11 +11,11 @@ usage() {
 }
 
 home_path() {
-    echo "${HOME}/.${1#${REPO}/dot.}"
+    echo "${HOME}/.${1#"${REPO}"/dot.}"
 }
 
 repo_path() {
-    local rel=${1#${HOME}/}
+    local rel=${1#"${HOME}"/}
     echo "${REPO}/dot.${rel#.}"
 }
 
@@ -56,7 +56,7 @@ case "${cmd}" in
     diff)
         rc=0
         for r in "${files[@]}"; do
-            diff -u --label "${r#${REPO}/}" --label "$(home_path "${r}")" "${r}" "$(home_path "${r}")" || rc=1
+            diff -u --label "${r#"${REPO}"/}" --label "$(home_path "${r}")" "${r}" "$(home_path "${r}")" || rc=1
         done
         exit ${rc}
         ;;

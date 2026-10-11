@@ -3,4 +3,4 @@
 set -o xtrace
 set -o errexit
 
-cp -p $(find -type f -name \*.rules -print) /etc/udev/rules.d
+find . -type f -name "*.rules" -exec cp -p {} /etc/udev/rules.d +
