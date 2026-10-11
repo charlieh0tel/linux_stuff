@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import asyncio
 import atexit
-import calendar
-import decimal
 import serial
 import sys
 import time
@@ -15,19 +12,25 @@ import scpi.wrapper
 
 
 class HP34970a(scpi.SCPIDevice):
-    async def configure_thermocouple(self, channels, probe_type='K', unit=None):
-        await self.command("CONF:TEMP TCOUPLE,%s,%s" % (probe_type, self._channel_string(channels)))
+    async def configure_thermocouple(self, channels, probe_type="K", unit=None):
+        await self.command(
+            "CONF:TEMP TCOUPLE,%s,%s" % (probe_type, self._channel_string(channels))
+        )
         if unit is not None:
-            await self.command("UNIT:TEMP %s,%s" % (unit, self._channel_string(channels)))
-        
+            await self.command(
+                "UNIT:TEMP %s,%s" % (unit, self._channel_string(channels))
+            )
+
     async def configure_vdc(self, channels, vrange=None):
         await self.command("CONF:VOLT:DC %s" % self._channel_string(channels))
         if vrange is not None:
-            await self.command("VOLT:DC:RANG %s,%s" % (vrange, self._channel_string(channels)))
+            await self.command(
+                "VOLT:DC:RANG %s,%s" % (vrange, self._channel_string(channels))
+            )
 
     async def set_scan(self, channels):
         await self.command("ROUTE:SCAN %s" % self._channel_string(channels))
-    
+
     async def set_instrument_time(self):
         now = time.gmtime()
         await self.command("SYSTEM:DATE %s" % time.strftime("%Y,%m,%d", now))
@@ -37,7 +40,7 @@ class HP34970a(scpi.SCPIDevice):
     async def get_instrument_time(self):
         # There is bug here if there is a rollover between calls.
         ymd = await self.ask("SYSTEM:DATE?")
-        (hms, fraction_s) = (await self.ask("SYSTEM:TIME?")).split('.')
+        (hms, fraction_s) = (await self.ask("SYSTEM:TIME?")).split(".")
         return time.strptime(ymd + " " + hms, "%Y,%m,%d %H,%M,%S")
 
     @staticmethod
@@ -50,15 +53,17 @@ def record(device):
     device.set_instrument_time()
 
     inst_time = device.get_instrument_time()
-    print("instrument time reads as (Zulu)", time.strftime("%m/%d/%Y %H:%M:%S", inst_time))
+    print(
+        "instrument time reads as (Zulu)", time.strftime("%m/%d/%Y %H:%M:%S", inst_time)
+    )
 
-    device.configure_thermocouple([101], probe_type='K', unit='C')
+    device.configure_thermocouple([101], probe_type="K", unit="C")
     device.configure_vdc([118], vrange="1V")
     device.configure_vdc([120], vrange="10V")
     device.set_scan([101, 118, 120])
 
-    #device.command("FORMAT:READ:ALAR ON")
-    #device.command("FORMAT:READ:CHAN ON")
+    # device.command("FORMAT:READ:ALAR ON")
+    # device.command("FORMAT:READ:CHAN ON")
     device.command("FORMAT:READ:TIME ON")
     device.command("FORMAT:READ:TIME:TYPE ABS")
     device.command("FORMAT:READ:UNIT ON")
@@ -66,7 +71,7 @@ def record(device):
     if not device.wait_for_complete(1):
         print("setup failed")
         return
-    
+
     while True:
         reading = device.ask("READ?")
         print(reading)
@@ -85,7 +90,8 @@ def main(argv):
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
             rtscts=True,
-            timeout=1)
+            timeout=1,
+        )
     else:
         transport = scpi.transports.gpib.prologix.get(port)
         transport.set_address(int(gpib_address))
@@ -105,6 +111,7 @@ def main(argv):
     finally:
         device.reset()
         device.reset()
+
 
 if __name__ == "__main__":
     main(sys.argv)
