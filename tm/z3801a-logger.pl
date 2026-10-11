@@ -45,12 +45,12 @@ $SIG{'TERM'} = 'sig_handler';
 
 #----------
 # display usage
-my $opt_string = 'dhi:f:p:';
+my $opt_string = 'dhi:f:p:b:F:';
 
 sub usage() {
 print STDERR << "EOF";
 
-usage: $0 [-dh] -f logfile -i log_interval -p serial_port
+usage: $0 [-dh] [-b baud] [-F framing] -f logfile -i log_interval -p serial_port
 
 -d	: run as daemon
 -h	: this (help) message
@@ -58,6 +58,8 @@ usage: $0 [-dh] -f logfile -i log_interval -p serial_port
 	  for output to console, use "-f -"
 -i	: logging interval in seconds
 -p	: serial port ("ttyS1")
+-b	: baud rate (default 19200)
+-F	: framing, databits/parity/stopbits (default 7O1; Z3805A is 8N1)
 
 EOF
 }
@@ -88,8 +90,14 @@ usage() and exit 1
 my $interval = $opt{i};
 my $portbase = $opt{p};
 my $logfile = $opt{f};
+my $baud = $opt{b} // 19200;
+my $framing = uc($opt{F} // "7O1");
 
 die "Interval must be a positive integer\n" unless $interval =~ /^[1-9]\d*$/;
+die "Baud must be a positive integer\n" unless $baud =~ /^[1-9]\d*$/;
+my ($databits, $parity, $stopbits) = $framing =~ /^([5-8])([NOE])([12])$/
+	or die "Framing must look like 7O1 or 8N1\n";
+$parity = { N => "none", O => "odd", E => "even" }->{$parity};
 
 # initialize other variables
 my $tint = 0;
@@ -118,10 +126,10 @@ $lockfile = "/var/lock/LCK.." . $portbase;
 
 $ob = Device::SerialPort->new ($port,$quiet,$lockfile);
 	die "Can't open serial port $port!\n" unless ($ob);
-$ob->baudrate(19200)	|| die "fail setting baud after 0";
-$ob->parity("odd")	|| die "fail setting parity";
-$ob->databits(7)	|| die "fail setting databits";
-$ob->stopbits(1)	|| die "fail setting stopbits";
+$ob->baudrate($baud)	|| die "fail setting baud";
+$ob->parity($parity)	|| die "fail setting parity";
+$ob->databits($databits)	|| die "fail setting databits";
+$ob->stopbits($stopbits)	|| die "fail setting stopbits";
 $ob->handshake("none")	|| die "fail setting handshake";
 $ob->read_const_time(100);
 $ob->write_settings || die "no settings";
@@ -134,12 +142,16 @@ $ob->are_match("\n","\r");
 # send a query and wait up to about 5 seconds for a reply
 sub query {
 	my ($cmd) = @_;
+	$ob->purge_rx;
 	$ob->lookclear;
 	$ob->write("$cmd\n");
 	for (1 .. 50) {
 		my $reply = $ob->lookfor;
 		return undef unless defined $reply;
-		next if $reply eq "";
+		if ($reply eq "") {
+			select(undef, undef, undef, 0.1);
+			next;
+		}
 
 		# is there a superfluous error message?
 		if (index($reply,">") != -1) {
@@ -149,6 +161,10 @@ sub query {
 		# not sure why two of these are necessary...
 		chomp $reply;
 		chomp $reply;
+
+		# skip the echoed command (the Z3805A echoes, the Z3801A doesn't)
+		$reply =~ s/^\s+|\s+\z//g;
+		next if $reply eq "" || lc($reply) eq lc($cmd);
 		return $reply;
 	}
 	return undef;
