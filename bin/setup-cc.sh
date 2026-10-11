@@ -9,7 +9,7 @@ PATH="${NPM_PACKAGES}/bin:${PATH}"
 
 npm install -g @anthropic-ai/claude-code
 
-if [ -r .github_pat ]; then
+if [ -r ~/.github_pat ]; then
     claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $(<~/.github_pat)"
 fi
 
