@@ -136,9 +136,13 @@ snd_strerror(err));
                 return 1;
         }
         printf("Channels:");
-        for (i = min; i <= max; ++i) {
-                if (!snd_pcm_hw_params_test_channels(pcm, hw_params, i))
-                        printf(" %u", i);
+        if (max - min > 64) {
+                printf(" %u-%u", min, max);
+        } else {
+                for (i = min; i <= max; ++i) {
+                        if (!snd_pcm_hw_params_test_channels(pcm, hw_params, i))
+                                printf(" %u", i);
+                }
         }
         putchar('\n');
 
