@@ -18,6 +18,9 @@
 # Changed format of timestamp (to use only ":" as element separators)
 # so that Stable32 won't think it's multiple fields.
 
+# version 0.9b -- 5 February 2003
+# Another version of timestamp, to match iso8601
+
 use strict;
 use vars qw( $OS_win $ob $port );
 use POSIX qw(setsid);
@@ -200,7 +203,7 @@ while (1) {
 		  = gmtime;
 
 		printf LOG 
-		  "%4.4u:%2.2u:%2.2u:%2.2u:%2.2u:%2.2u %0+.3E %6u %0+.3E\n",
+		  "%4.4u-%2.2u-%2.2uT%2.2u:%2.2u:%2.2u %0+.3E %6u %0+.3E\n",
 		  $year+1900,$mon+1,$mday,$hour,$min,$sec,$tint,$efc,$tunc;
 
 	# sleep for loop
