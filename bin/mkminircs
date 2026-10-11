@@ -1,63 +1,65 @@
 #!/usr/bin/python3
 
-_NSERIAL=4
-_NUSB=10
-_NACM=4
-_NRFCOMM=4
+_NSERIAL = 4
+_NUSB = 10
+_NACM = 4
+_NRFCOMM = 4
 
 PORT_SUFFIXES = (
-  ['ttyS%d' % d for d in range(_NSERIAL + 1)] +
-  ['ttyUSB%d' % d for d in range(_NUSB + 1)] +
-  ['ttyACM%d' % d for d in range(_NACM + 1)] +
-  ['rfcomm%d' % d for d in range(_NRFCOMM + 1)])
-BAUDS = ([
-  1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200
-])
+    ["ttyS%d" % d for d in range(_NSERIAL + 1)]
+    + ["ttyUSB%d" % d for d in range(_NUSB + 1)]
+    + ["ttyACM%d" % d for d in range(_NACM + 1)]
+    + ["rfcomm%d" % d for d in range(_NRFCOMM + 1)]
+)
+BAUDS = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
 BITS = [7, 8]
-PARITIES = ['n', 'e']
+PARITIES = ["n", "e"]
+
 
 class PortConfig:
-  def __init__(self, port, baud, rtscts, bits, parity):
-    self.port = port
-    self.baud = baud
-    self.rtscts = rtscts
-    self.bits = bits
-    self.parity = parity
+    def __init__(self, port, baud, rtscts, bits, parity):
+        self.port = port
+        self.baud = baud
+        self.rtscts = rtscts
+        self.bits = bits
+        self.parity = parity
 
-  def path(self):
-    path = "minirc.%s-%d-%d%c1" % (self.port, self.baud, self.bits, self.parity)
-    if not self.rtscts: path += "-noflow"
-    return path
+    def path(self):
+        path = "minirc.%s-%d-%d%c1" % (self.port, self.baud, self.bits, self.parity)
+        if not self.rtscts:
+            path += "-noflow"
+        return path
 
-  def config(self):
-    s = ""
-    s += "pu port %s\n" % ("/dev/" + self.port)
-    s += "pu baudrate %d\n" % self.baud
-    s += "pu parity %c\n" % self.parity
-    s += "pu bits %d\n" % self.bits
-    s += "pu minit\n"
-    s += "pu mreset\n"
-    s += "pu mhangup\n"
-    s += "pu backspace DEL\n"
-    s += "pu rtscts %s" % ("Yes" if self.rtscts else "No")
+    def config(self):
+        s = ""
+        s += "pu port %s\n" % ("/dev/" + self.port)
+        s += "pu baudrate %d\n" % self.baud
+        s += "pu parity %c\n" % self.parity
+        s += "pu bits %d\n" % self.bits
+        s += "pu minit\n"
+        s += "pu mreset\n"
+        s += "pu mhangup\n"
+        s += "pu backspace DEL\n"
+        s += "pu rtscts %s" % ("Yes" if self.rtscts else "No")
 
-    return s
+        return s
 
-  def write_shell(self):
-    print(f"cat >/etc/minicom/{self.path()} <<EOF")
-    # Should escape this but so far not needed.
-    print(self.config())
-    print("EOF")
+    def write_shell(self):
+        print(f"cat >/etc/minicom/{self.path()} <<EOF")
+        # Should escape this but so far not needed.
+        print(self.config())
+        print("EOF")
+
 
 def generate_all_minircs():
-  for port in PORT_SUFFIXES:
-    for baud in BAUDS:
-      for rtscts in [True, False]:
-        for bits in BITS:
-          for parity in PARITIES:
-            p = PortConfig(port, baud, rtscts, bits, parity)
-            p.write_shell()
-            
+    for port in PORT_SUFFIXES:
+        for baud in BAUDS:
+            for rtscts in [True, False]:
+                for bits in BITS:
+                    for parity in PARITIES:
+                        p = PortConfig(port, baud, rtscts, bits, parity)
+                        p.write_shell()
+
 
 if __name__ == "__main__":
-  generate_all_minircs()
+    generate_all_minircs()
