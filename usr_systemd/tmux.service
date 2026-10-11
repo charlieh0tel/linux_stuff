@@ -4,10 +4,8 @@ Description=Persistent Tmux Server
 [Service]
 Type=forking
 ExecStart=/usr/bin/tmux new-session -s default -d
-ExecStop=/usr/bin/tmux kill-session -t default
-# Protect from systemd-oomd
+ExecStop=/usr/bin/tmux kill-server
 OOMPolicy=continue
-ManagedOOMPreference=avoid
 
 [Install]
 WantedBy=default.target
