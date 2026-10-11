@@ -1,5 +1,11 @@
+CFLAGS ?= -O2 -Wall -Wextra
+
+.PHONY: all clean
+
 all: usbreset
 
 usbreset: usbreset.c
-	  cc -Wall -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
+clean:
+	rm -f usbreset

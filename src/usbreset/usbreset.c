@@ -67,6 +67,7 @@ int main(int argc, char **argv)
 	rc = ioctl(fd, USBDEVFS_RESET, 0);
 	if (rc < 0) {
 		perror("Error in ioctl");
+		close(fd);
 		return 1;
 	}
 	printf("Reset successful\n");
