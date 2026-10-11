@@ -12,7 +12,7 @@ GCS_URL=gs://somebucket/packages
 export CLOUDSDK_CONFIG="${GCLOUD_CONFIG}"
 
 if (( EUID != 0 )); then
-    echo "$0: please run as root" 2>&1
+    echo "$0: please run as root" >&2
     exit 99
 fi
 

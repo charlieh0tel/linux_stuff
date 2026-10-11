@@ -7,4 +7,4 @@ xorriso \
     -compliance no_emul_toc \
     -update "${HERE}/syslinux.cfg"  /boot/syslinux/syslinux.cfg \
     -update "${HERE}/grub.cfg" /boot/grub/grub.cfg \
-    -boot_image any replay \
+    -boot_image any replay
