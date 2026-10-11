@@ -2,7 +2,8 @@
 name = "hpgps"
 version = "0.0.1"
 edition = "2024"
+rust-version = "1.85"
 
 [dependencies]
-derive_more = { version="2.1.1", features= ["full"] }
+derive_more = { version="2.1.1", features = ["display", "from_str"] }
 regex = "1.12.3"

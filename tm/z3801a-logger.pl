@@ -37,8 +37,6 @@ sub sig_handler {
 # there's got to be a better way!
 $SIG{'HUP'} = 'sig_handler';
 $SIG{'INT'} = 'sig_handler';
-$SIG{'KILL'} = 'sig_handler';
-$SIG{'STOP'} = 'sig_handler';
 $SIG{'TERM'} = 'sig_handler';
 #----------
 
@@ -66,7 +64,7 @@ EOF
 # daemonize
 sub daemonize {
 	chdir '/' or die "Can't chdir to /: $!";
-	umask 0;
+	umask 022;
 	open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
 	open STDOUT, '>/dev/null' or die "Can't write to /dev/null: $!";
 	open STDERR, '>/dev/null' or die "Can't write to /dev/null: $!";
@@ -76,43 +74,25 @@ sub daemonize {
 }
 #----------
 
-getopts( "$opt_string", \my %opt ) or usage() and exit;
+getopts( "$opt_string", \my %opt ) or usage() and exit 1;
 
 # print usage
 usage() and exit if $opt{h};
-
-# run as daemon?
-&daemonize if $opt{d};
+usage() and exit 1
+	unless defined $opt{i} && defined $opt{p} && defined $opt{f};
 
 # set variables to command line params
 my $interval = $opt{i};
 my $portbase = $opt{p};
 my $logfile = $opt{f};
 
+die "Interval must be a positive integer\n" unless $interval =~ /^[1-9]\d*$/;
+
 # initialize other variables
 my $tint = 0;
 my $last_tint = 0;
 my $efc = "";
 my $tunc = "";
-
-#----------
-# set up serial port
-my $quiet = "1";
-my $port = "/dev/" . $portbase;
-$lockfile = "/var/lock/LCK.." . $portbase;
-
-$ob = Device::SerialPort->new ($port,$quiet,$lockfile);
-	die "Can't open serial port $port!\n" unless ($ob);
-$ob->baudrate(19200)	|| die "fail setting baud after 0";
-$ob->parity("odd")	|| die "fail setting parity";
-$ob->databits(7)	|| die "fail setting databits";
-$ob->stopbits(1)	|| die "fail setting stopbits";
-$ob->handshake("none")	|| die "fail setting handshake";
-$ob->write_settings || die "no settings";
-
-# end of message characters for serial input
-$ob->are_match("\n","\r");
-#----------
 
 #----------
 # set up logfile
@@ -123,34 +103,77 @@ select(LOG), $| = 1;
 #----------
 
 #----------
+# set up serial port
+my $quiet = "1";
+my $port = "/dev/" . $portbase;
+die "Can't access serial port $port!\n" unless -r $port && -w $port;
+
+# run as daemon?
+&daemonize if $opt{d};
+
+$lockfile = "/var/lock/LCK.." . $portbase;
+
+$ob = Device::SerialPort->new ($port,$quiet,$lockfile);
+	die "Can't open serial port $port!\n" unless ($ob);
+$ob->baudrate(19200)	|| die "fail setting baud after 0";
+$ob->parity("odd")	|| die "fail setting parity";
+$ob->databits(7)	|| die "fail setting databits";
+$ob->stopbits(1)	|| die "fail setting stopbits";
+$ob->handshake("none")	|| die "fail setting handshake";
+$ob->read_const_time(100);
+$ob->write_settings || die "no settings";
+
+# end of message characters for serial input
+$ob->are_match("\n","\r");
+#----------
+
+#----------
+# send a query and wait up to about 5 seconds for a reply
+sub query {
+	my ($cmd) = @_;
+	$ob->lookclear;
+	$ob->write("$cmd\n");
+	for (1 .. 50) {
+		my $reply = $ob->lookfor;
+		return undef unless defined $reply;
+		next if $reply eq "";
+
+		# is there a superfluous error message?
+		if (index($reply,">") != -1) {
+			$reply = substr($reply,index($reply,">") + 1);
+		}
+
+		# not sure why two of these are necessary...
+		chomp $reply;
+		chomp $reply;
+		return $reply;
+	}
+	return undef;
+}
+#----------
+
+#----------
 # main loop
 while (1) {
 
 	#----------
 	# get time interval
 		$last_tint = $tint;
-		$ob->lookclear;
-		$tint = "";
-		$ob->write(":PTIME:TINT?\n");
-		until ("" ne $tint) {
-			$tint = $ob->lookfor;
-		}
+		$tint = query(":PTIME:TINT?");
 
-		# is there a superfluous error message?
-		if (index($tint,">") != -1) {
-			$tint = substr($tint,index($tint,">") + 1);
+		# skip this sample if the unit didn't answer
+		unless (defined $tint) {
+			$tint = $last_tint;
+			sleep $interval;
+			next;
 		}
-
-		# not sure why two of these are necessary...
-		chomp $tint;
-		chomp $tint;
 
 		# fudge values to please Stable32
 		#   -- tweak duplicates
 		if ($tint == $last_tint) {
 			my ($val1,$val2) = split /E/,$tint;
 			$val1 = $val1 + 0.001;
-			$tint = $val1 . "E" . $val2;
+			$tint = defined $val2 ? $val1 . "E" . $val2 : $val1;
 		}
 		#   -- tweak zero values
 		if ($tint == 0) {
@@ -158,38 +181,19 @@ while (1) {
 			}
 	#----------
 	# get EFC
-		$ob->lookclear;
-		$efc = "";
-		$ob->write(":DIAG:ROSC:EFC:ABS?\n");
-		until ("" ne $efc) {
-			$efc = $ob->lookfor;
-		}
-
-		# is there a superfluous error message?
-		if (index($efc,">") != -1) {
-			$efc = substr($efc,index($efc,">") + 1);
-		}
-		chomp $efc;
-		chomp $efc;
+		$efc = query(":DIAG:ROSC:EFC:ABS?");
 
 	#----------
 	# get predicted uncertainty
-		$ob->lookclear;
-		$tunc = "";
-		$ob->write(":ROSC:HOLD:TUNC:PRED?\n");
-		until ("" ne $tunc) {
-			$tunc = $ob->lookfor;
-		}
+		$tunc = query(":ROSC:HOLD:TUNC:PRED?");
 
-		# is there a superfluous error message?
-		if (index($tunc,">") != -1) {
-			$tunc = substr($tunc,index($tunc,">") + 1);
+		unless (defined $efc && defined $tunc) {
+			sleep $interval;
+			next;
 		}
-		chomp $tunc;
-		chomp $tunc;
 
 		# get rid of ',0' at the end of the return
-		substr($tunc,-2) = "";
+		$tunc =~ s/,0\z//;
 
 	# print routine
 		my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)

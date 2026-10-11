@@ -21,10 +21,10 @@ usage: $0 [-h] -p serial_port
 EOF
 }
 
-getopts( "$opt_string", \my %opt ) or usage() and exit;
+getopts( "$opt_string", \my %opt ) or usage() and exit 1;
 
 usage() and exit if $opt{h};
-usage() and exit if ! defined $opt{p};
+usage() and exit 1 if ! defined $opt{p};
 
 my $portdev = $opt{p};
 my $quiet = 1;
@@ -36,7 +36,6 @@ if ($opt{z}) {
     $port->parity("odd")	 || die "fail setting parity";
     $port->databits(7)		 || die "fail setting databits";
 } else {
-    # The default is 9600 on 58503B.
     $port->baudrate(19200)	 || die "fail setting baud after 0";
     $port->parity("none")	 || die "fail setting parity";
     $port->databits(8)		 || die "fail setting databits";

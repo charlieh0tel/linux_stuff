@@ -1,5 +1,8 @@
-bin
-include
-lib
-share
+/bin/
+/include/
+/lib/
+/share/
+/pyvenv.cfg
 .venv
+scpi
+__pycache__/

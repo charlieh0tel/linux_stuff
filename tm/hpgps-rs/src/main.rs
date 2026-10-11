@@ -4,7 +4,7 @@ use regex::Regex;
 use std::str::FromStr;
 
 #[derive(Debug, Display)]
-#[display("GpsTracking (prn={prn}, el={el}, zz={az}, ss={ss})")]
+#[display("GpsTracking (prn={prn}, el={el}, az={az}, ss={ss})")]
 struct GpsTracking {
     prn: u32,
     el: u32,
@@ -13,7 +13,7 @@ struct GpsTracking {
 }
 
 #[derive(Debug, Display)]
-#[display("GpsNotTracking (prn={prn}, el={el}, zz={az})")]
+#[display("GpsNotTracking (prn={prn}, el={el}, az={az})")]
 struct GpsNotTracking {
     prn: u32,
     el: u32,
@@ -110,8 +110,9 @@ scpi >
 
     // Extract SmartClock Mode
     let mode_re = Regex::new(r">>\s*(Locked to GPS|Recovery|Holdover|Power-up)").unwrap();
-    let smartclock_mode = mode_re.captures(input).unwrap()[1]
-        .parse()
+    let smartclock_mode = mode_re
+        .captures(input)
+        .and_then(|c| c[1].parse().ok())
         .unwrap_or(SmartClockMode::Unknown);
 
     // Extract GPS tracking PRNs
@@ -148,12 +149,12 @@ scpi >
     .unwrap();
     let health_monitor = if let Some(captures) = health_monitor_re.captures(input) {
         HealthMonitor {
-            self_test: captures[1].parse().unwrap(),
-            int_pwr: captures[2].parse().unwrap(),
-            oven_pwr: captures[3].parse().unwrap(),
-            ocxo: captures[4].parse().unwrap(),
-            efc: captures[5].parse().unwrap(),
-            gps_rcv: captures[6].parse().unwrap(),
+            self_test: captures[1].parse().unwrap_or(HealthState::Unknown),
+            int_pwr: captures[2].parse().unwrap_or(HealthState::Unknown),
+            oven_pwr: captures[3].parse().unwrap_or(HealthState::Unknown),
+            ocxo: captures[4].parse().unwrap_or(HealthState::Unknown),
+            efc: captures[5].parse().unwrap_or(HealthState::Unknown),
+            gps_rcv: captures[6].parse().unwrap_or(HealthState::Unknown),
         }
     } else {
         HealthMonitor {
@@ -173,7 +174,7 @@ scpi >
         tracking_prns
     );
     println!(
-        "Not Tracking PRNs (n={0}): {1:#?})",
+        "Not Tracking PRNs (n={0}): {1:#?}",
         not_tracking_prns.len(),
         not_tracking_prns
     );

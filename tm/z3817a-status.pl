@@ -22,10 +22,10 @@ usage: $0 [-h] -p serial_port
 EOF
 }
 
-getopts( "$opt_string", \my %opt ) or usage() and exit;
+getopts( "$opt_string", \my %opt ) or usage() and exit 1;
 
 usage() and exit if $opt{h};
-usage() and exit if ! defined $opt{p};
+usage() and exit 1 if ! defined $opt{p};
 
 my $portdev = $opt{p};
 my $quiet = "1";
@@ -52,6 +52,8 @@ my $exp = Expect->exp_init(\*FH);
 $exp->send("*CLS\n");
 
 my $win = new Curses;
+END { endwin; }
+$SIG{INT} = $SIG{TERM} = sub { exit 0; };
 
 $exp->expect($timeout,
 	     [
