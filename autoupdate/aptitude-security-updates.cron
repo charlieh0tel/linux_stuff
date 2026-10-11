@@ -1,7 +1,11 @@
-# copy to /etc/cron.weekely/apt-security-updates
+#!/bin/sh
+# copy to /etc/cron.weekly/apt-security-updates
 
-echo "**************" >> /var/log/apt-security-updates
-date >> /var/log/apt-security-updates
-aptitude update >> /var/log/apt-security-updates
-aptitude safe-upgrade -o Aptitude::Delete-Unused=false --assume-yes --target-release `lsb_release -cs`-security >> /var/log/apt-security-updates
-echo "Security updates (if any) installed"
+LOG=/var/log/apt-security-updates
+
+{
+    echo "**************"
+    date
+    aptitude update
+    aptitude safe-upgrade -o Aptitude::Delete-Unused=false --assume-yes --target-release "$(lsb_release -cs)-security"
+} >>"${LOG}" 2>&1

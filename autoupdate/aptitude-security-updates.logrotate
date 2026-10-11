@@ -3,7 +3,8 @@
 /var/log/apt-security-updates {
         rotate 2
         weekly
-        size 250k
+        maxsize 250k
         compress
+        missingok
         notifempty
 }

@@ -24,17 +24,21 @@ daily update timers.
 Create a dedicated local override file.
 
 ```bash
-sudo ${EDITOR} /etc/apt/apt.conf.d/52unattended-upgrades-local
+sudoedit /etc/apt/apt.conf.d/52unattended-upgrades-local
 ```
 
 Paste pieces of the following configuration, according to needs and taste.
-(`needrestart` is required to restart serivces immediately when
+(`needrestart` is required to restart services immediately when
 underlying dependencies update.)
 
 ```text
 // Optional: restrict updates strictly to security patches
+// (Ubuntu's 50unattended-upgrades already defaults to this.)
+#clear Unattended-Upgrade::Allowed-Origins;
 Unattended-Upgrade::Allowed-Origins {
-    "\({distro_id}:\){distro_codename}-security";
+    "${distro_id}:${distro_codename}-security";
+    "${distro_id}ESMApps:${distro_codename}-apps-security";
+    "${distro_id}ESM:${distro_codename}-infra-security";
 };
 
 // Prevent the server from running out of disk space.
@@ -42,23 +46,29 @@ Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 APT::Periodic::AutocleanInterval "7";
 
-// Force services to restart in memory rather than full reboot.
+// Never reboot; needrestart restarts affected services instead.
 Unattended-Upgrade::Automatic-Reboot "false";
-Needs-Restart::Command "restart";
 
-// Keep memory usage low (Zero) during the update process.
-Unattended-Upgrade::Cache-Commit-Interval "0";
+// Install in minimal steps so an upgrade can be interrupted cleanly.
+Unattended-Upgrade::MinimalSteps "true";
 
 // Only run updates when on main AC power, if applicable.
-Unattended-Upgrade::Only-On-AC-Power "true";
+Unattended-Upgrade::OnlyOnACPower "true";
+```
+
+To make `needrestart` restart services automatically rather than
+prompt, create `/etc/needrestart/conf.d/50-auto.conf`:
+
+```perl
+$nrconf{restart} = 'a';
 ```
 
 ---
 
 ## 3. Locking Updates to a Specific Time (3:00 AM)
 
-Debian applies a default randomized delay that can cause upgrades to
-trigger in the middle of the day. To force the upgrade process to run
+By default the upgrade runs at 06:00 plus a random delay of up to
+an hour. To force the upgrade process to run
 exclusively at 3:00 AM, override the systemd timer configuration.
 
 ```bash
