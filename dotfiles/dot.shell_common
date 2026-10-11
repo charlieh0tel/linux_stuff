@@ -1,0 +1,32 @@
+# ~/.shell_common: environment shared by all shells.
+# Sourced from ~/.profile (login shells, any sh) and the top of ~/.bashrc
+# (non-login bash, including `ssh host cmd`).
+#
+# Keep this POSIX sh, quiet (no output), and idempotent: it may be sourced
+# several times in one shell and again in every nested shell.
+
+path_prepend() { case ":${PATH}:" in *":$1:"*) ;; *) [ -d "$1" ] && PATH="$1:${PATH}";; esac; }
+path_append()  { case ":${PATH}:" in *":$1:"*) ;; *) [ -d "$1" ] && PATH="${PATH}:$1";; esac; }
+
+path_prepend /usr/sbin
+path_prepend /sbin
+path_prepend "${HOME}/bin"
+path_prepend "${HOME}/.local/bin"
+path_prepend "${HOME}/.cargo/bin"
+path_prepend "${HOME}/.npm-modules/bin"
+path_prepend "${HOME}/.go/bin"
+path_prepend "${HOME}/.deno/bin"
+path_append "${HOME}/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin"
+#path_append "${HOME}/apps/zig-x86_64-linux-0.16.0-dev.2510+bcb5218a2"
+path_append "${HOME}/.platformio/penv/bin"
+
+unset -f path_prepend path_append
+export PATH
+
+if [ -d "${HOME}/.go/bin" ]; then
+    export GOPATH="${HOME}/go"
+fi
+
+export EDITOR=emacs
+export VISUAL=emacs
+#export STM32_PRG_PATH=/home/ch/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin
