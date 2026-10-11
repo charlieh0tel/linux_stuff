@@ -1,11 +1,11 @@
-# Using unbound with bind and isc-dhcp-server for dhcpd and dnyamic DNS behind NAT
+# Using unbound with bind and isc-dhcp-server for dhcpd and dynamic DNS behind NAT
 
 
 ## Network configuration
 
 Local domain: foobar.internal
 
-Local networks: 10.0/16 (hosts with static IPs), 10.1/16 (hosts with dhcp address)
+Local networks: 10.0.0.0/24 (hosts with static IPs), 10.0.1.0/24 (hosts with dhcp address)
 
 IPv6: no
 
@@ -142,7 +142,6 @@ Only brings up DHCP for IPv4.
             listen-on { 127.0.0.2/32; };
             listen-on-v6 { none; };
 
-            dnssec-enable yes;
             dnssec-validation auto;
     };
 
@@ -150,7 +149,7 @@ Only brings up DHCP for IPv4.
 
     key dhcp-update {
       // $YOUR_KEYING_MATERIAL.  must match dhcpd config
-    }
+    };
 
 ## /etc/bind/named.conf.default-zones
 
@@ -204,7 +203,7 @@ If bind doesn't create this for you, make an empty zone file with just
 an SOA for 1.0.10.in-addr.arpa.  You should never have to touch this
 file again.
 
-## /etc/dhcp/dchpd.conf (abridged)
+## /etc/dhcp/dhcpd.conf (abridged)
 
     ddns-updates on;
     ddns-update-style standard; 
@@ -213,8 +212,8 @@ file again.
     ignore client-updates;
 
     key dhcp-update {
-      // $YOUR_KEYING_MATERIAL – must match what bind has.
-    }
+      # $YOUR_KEYING_MATERIAL – must match what bind has.
+    };
 
     subnet 10.0.0.0 netmask 255.255.0.0 {
       authoritative;
@@ -262,9 +261,9 @@ Add to /etc/dhcp/dhcpd.conf:
         ddns-hostname "foo-baz";
       }
 
-      // Same for hosts that send no name or bad names.
+      # Same for hosts that send no name or bad names.
 
-      // N.B. if the hostname is in the static zones, the host
-      // will always get the same IP. 
+      # N.B. if the hostname is in the static zones, the host
+      # will always get the same IP. 
     }
 
