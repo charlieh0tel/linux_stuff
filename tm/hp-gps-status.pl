@@ -7,16 +7,18 @@ use Getopt::Std;
 use Device::SerialPort;
 use Curses;
 
-my $opt_string = 'hp:z';
+my $opt_string = 'hp:zb:F:';
 
 sub usage() {
 print STDERR << "EOF";
 
-usage: $0 [-h] -p serial_port
+usage: $0 [-h] [-z] [-b baud] [-F framing] -p serial_port
 
 -h	: this (help) message
 -p	: serial port ("/dev/ttyS1")
--z	: use 7 bits, 19200 baud, odd parity
+-z	: use 7 bits, 19200 baud, odd parity (Z3801A); same as -F 7O1
+-b	: baud rate (default 19200)
+-F	: framing, databits/parity/stopbits (default 8N1)
 
 EOF
 }
@@ -27,20 +29,21 @@ usage() and exit if $opt{h};
 usage() and exit 1 if ! defined $opt{p};
 
 my $portdev = $opt{p};
+my $baud = $opt{b} // 19200;
+my $framing = uc($opt{F} // ($opt{z} ? "7O1" : "8N1"));
+
+die "Baud must be a positive integer\n" unless $baud =~ /^[1-9]\d*$/;
+my ($databits, $parity, $stopbits) = $framing =~ /^([5-8])([NOE])([12])$/
+    or die "Framing must look like 7O1 or 8N1\n";
+$parity = { N => "none", O => "odd", E => "even" }->{$parity};
 my $quiet = 1;
 
 my $port = Device::SerialPort->new($portdev, $quiet)
     || die "Can't open serial port $portdev!\n";
-if ($opt{z}) {
-    $port->baudrate(19200)	 || die "fail setting baud after 0";
-    $port->parity("odd")	 || die "fail setting parity";
-    $port->databits(7)		 || die "fail setting databits";
-} else {
-    $port->baudrate(19200)	 || die "fail setting baud after 0";
-    $port->parity("none")	 || die "fail setting parity";
-    $port->databits(8)		 || die "fail setting databits";
-}
-$port->stopbits(1)	 || die "fail setting stopbits";
+$port->baudrate($baud)	 || die "fail setting baud";
+$port->parity($parity)	 || die "fail setting parity";
+$port->databits($databits)	 || die "fail setting databits";
+$port->stopbits($stopbits)	 || die "fail setting stopbits";
 $port->handshake("none") || die "fail setting handshake";
 $port->write_settings    || die "no settings";
 
@@ -89,7 +92,8 @@ while (1) {
 	if ($expecting_status) {
 	    my @lines = split(/\n/, $buf);
 	    pop @lines;		# the prompt line
-	    shift @lines;	# echoed command
+	    shift @lines	# echoed command (the Z3801A doesn't echo)
+		if @lines && $lines[0] =~ /^\s*:SYSTEM:STATUS\?\s*$/i;
 	    my $screen = join("\n", @lines);
 	    $screen =~ s/\r//g;
 	    $win->clear;
