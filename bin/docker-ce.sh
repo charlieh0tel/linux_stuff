@@ -4,6 +4,11 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+if [ "$EUID" -ne 0 ]; then
+    echo "$0: run as root."
+    exit 1
+fi
+
 apt-get update
 apt-get install -y ca-certificates curl
 
