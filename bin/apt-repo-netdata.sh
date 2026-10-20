@@ -51,13 +51,15 @@ main() {
   fi
   apt_repo::install_packages netdata
 
+  # netdata owns cloud.d, so never write through a path in it: build the file
+  # as root and let install replace whatever is there, symlinks included.
   install -m 0775 -o netdata -g netdata -d "${CLOUD_DIR}"
-  cat > "${CLOUD_CONF}" << 'EOF'
+  cat > "${APT_REPO_TMP}/cloud.conf" << 'EOF'
 [global]
   enabled = no
 EOF
-  chown netdata:netdata "${CLOUD_CONF}"
-  chmod 0664 "${CLOUD_CONF}"
+  install -m 0664 -o netdata -g netdata "${APT_REPO_TMP}/cloud.conf" \
+    "${CLOUD_CONF}"
   touch "${ETC}/.opt-out-from-anonymous-statistics"
 
   systemctl restart netdata
