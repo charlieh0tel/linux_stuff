@@ -1,46 +1,41 @@
 #!/bin/bash
+#
+# Reinstalls netdata from Netdata's stable repository, with cloud and
+# anonymous statistics turned off.
 
-set -o errexit
-set -o pipefail
-set -o nounset
+set -o errexit -o nounset -o pipefail
 
-# shellcheck source=/dev/null
-. /etc/os-release
+readonly CLOUD_DIR=/etc/netdata/cloud.d
+readonly CLOUD_CONF="${CLOUD_DIR}/cloud.conf"
 
-if [ "${ID}" == "raspbian" ]; then
-    ID="${ID_LIKE}"
-fi
+main() {
+  if (( EUID != 0 )); then
+    echo "${0##*/}: run as root." >&2
+    exit 1
+  fi
+  export DEBIAN_FRONTEND=noninteractive
 
-KEYRING="/usr/share/keyrings/netdata-keyring.gpg"
+  "$(dirname "$(readlink -f "$0")")/../bin/apt-repo-netdata.sh"
 
-curl https://repo.netdata.cloud/netdatabot.gpg.key | gpg --dearmor > "${KEYRING}"  || :;
+  set -o xtrace
 
-cat <<EOF >/etc/apt/sources.list.d/netdata.list 
-deb [signed-by=${KEYRING}] https://repo.netdata.cloud/repos/stable/${ID}/ ${VERSION_CODENAME}/
-EOF
+  apt-get purge -y 'netdata*' < /dev/null
+  rm -rf /var/lib/netdata /etc/netdata
 
-set -o xtrace
+  apt-get install -y netdata
 
-apt update
-
-apt purge -y netdata\* </dev/null
-rm -fr /var/lib/netdata
-rm -fr /etc/netdata
-
-apt install -y netdata
-
-CLOUD_DIR="/etc/netdata/cloud.d"
-CLOUD_CONF="${CLOUD_DIR}/cloud.conf"
-mkdir -p "${CLOUD_DIR}"
-cat <<EOF >"${CLOUD_CONF}"
+  mkdir -p "${CLOUD_DIR}"
+  cat << 'EOF' > "${CLOUD_CONF}"
 [global]
   enabled = no
 EOF
-chown -R netdata:netdata "${CLOUD_DIR}"
-chmod 0775 "${CLOUD_DIR}"
-chmod 0664 "${CLOUD_CONF}"
+  chown -R netdata:netdata "${CLOUD_DIR}"
+  chmod 0775 "${CLOUD_DIR}"
+  chmod 0664 "${CLOUD_CONF}"
 
-touch /etc/netdata/.opt-out-from-anonymous-statistics
+  touch /etc/netdata/.opt-out-from-anonymous-statistics
 
-systemctl restart netdata
+  systemctl restart netdata
+}
 
+main "$@"
