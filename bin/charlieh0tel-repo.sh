@@ -28,7 +28,17 @@ if ! gpg --batch --list-keys "${FINGERPRINT}" > /dev/null 2>&1; then
     echo "$0: key ${FINGERPRINT} not found in ${URL}/public.key." >&2
     exit 1
 fi
-gpg --batch --export "${FINGERPRINT}" > "${TMP}/key.gpg"
+gpg --batch --export "${FINGERPRINT}!" > "${TMP}/key.gpg"
+
+# A subkey can carry the same fingerprint, so require that the export is
+# exactly one primary key and that it is the pinned one.
+PRIMARIES="$(gpg --show-keys --with-colons "${TMP}/key.gpg" |
+    awk -F: '$1 == "pub" { want = 1; next }
+             $1 == "fpr" && want { print $10; want = 0 }')"
+if [[ "${PRIMARIES}" != "${FINGERPRINT}" ]]; then
+    echo "$0: exported keyring is not exactly primary key ${FINGERPRINT}." >&2
+    exit 1
+fi
 
 install -m 0755 -d /etc/apt/keyrings
 install -m 0644 "${TMP}/key.gpg" "${KEYRING}"
