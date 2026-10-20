@@ -38,6 +38,12 @@ EOF
     "${PREFERENCES}/mozilla-block-ubuntu-firefox"
 
   apt_repo::install_packages firefox
+
+  # The deb replaces Ubuntu's transitional package but not the snap it
+  # pulled in.  snapd keeps a snapshot of the snap's data for 31 days.
+  if command -v snap > /dev/null && snap list firefox > /dev/null 2>&1; then
+    snap remove firefox
+  fi
 }
 
 main "$@"
