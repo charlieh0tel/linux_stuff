@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Adds Netdata's stable apt repository.  sbin/install-netdata.sh installs
+# Adds Netdata's stable apt repository.  install-netdata.sh installs
 # and configures netdata from it.
 
 set -o errexit -o nounset -o pipefail

@@ -15,7 +15,7 @@ main() {
   fi
   export DEBIAN_FRONTEND=noninteractive
 
-  "$(dirname "$(readlink -f "$0")")/../bin/apt-repo-netdata.sh"
+  "$(dirname "$(readlink -f "$0")")/apt-repo-netdata.sh"
 
   set -o xtrace
 
