@@ -12,15 +12,10 @@ main() {
   apt_repo::init
 
   local id codename
-  id="$(
-    # shellcheck source=/dev/null
-    . /etc/os-release
-    if [[ "${ID}" == raspbian ]]; then
-      echo "${ID_LIKE}"
-    else
-      echo "${ID}"
-    fi
-  )"
+  id="$(apt_repo::os_release ID)"
+  if [[ "${id}" == raspbian ]]; then
+    id="$(apt_repo::os_release ID_LIKE)"
+  fi
   codename="$(apt_repo::codename)"
 
   apt_repo::install_key netdata https://repo.netdata.cloud/netdatabot.gpg.key \

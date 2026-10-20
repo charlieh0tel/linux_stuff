@@ -24,6 +24,15 @@ apt_repo::die() {
 }
 
 #######################################
+# Succeeds if PACKAGE is installed.
+# Arguments:
+#   Package.
+#######################################
+apt_repo::installed() {
+  [[ "$(dpkg-query -W -f='${db:Status-Abbrev}' "$1" 2> /dev/null)" == ii* ]]
+}
+
+#######################################
 # Checks for root, creates a scratch directory and installs the tools the
 # other helpers need.
 # Globals:
@@ -42,8 +51,7 @@ apt_repo::init() {
   local pkg
   local missing=()
   for pkg in ca-certificates curl gpg; do
-    dpkg-query -W -f='${db:Status-Abbrev}' "${pkg}" 2> /dev/null \
-      | grep -q '^ii' || missing+=("${pkg}")
+    apt_repo::installed "${pkg}" || missing+=("${pkg}")
   done
   if (( ${#missing[@]} > 0 )); then
     apt-get update
@@ -52,14 +60,28 @@ apt_repo::init() {
 }
 
 #######################################
+# Prints a field from /etc/os-release, read in a clean environment so the
+# caller's variables cannot interfere.
+# Arguments:
+#   Field name, e.g. ID.
+#######################################
+apt_repo::os_release() {
+  local value
+  # shellcheck disable=SC2016  # The inner bash expands it.
+  value="$(env -i bash -c '. /etc/os-release && printf "%s" "${!1:-}"' \
+    _ "$1")" || apt_repo::die "cannot read /etc/os-release."
+  printf '%s\n' "${value}"
+}
+
+#######################################
 # Prints the Ubuntu (or Debian) codename of this host.
 #######################################
 apt_repo::codename() {
-  (
-    # shellcheck source=/dev/null
-    . /etc/os-release
-    echo "${UBUNTU_CODENAME:-${VERSION_CODENAME}}"
-  )
+  local codename
+  codename="$(apt_repo::os_release UBUNTU_CODENAME)"
+  [[ -n "${codename}" ]] || codename="$(apt_repo::os_release VERSION_CODENAME)"
+  [[ -n "${codename}" ]] || apt_repo::die "no codename in /etc/os-release."
+  printf '%s\n' "${codename}"
 }
 
 #######################################
@@ -306,8 +328,10 @@ apt_repo::remove_legacy() {
   local key
   for key in "${keys[@]}"; do
     [[ "${key}" != "${keep_key}" ]] || continue
+    # Not grep -q: under pipefail, its early exit would fail the pipeline
+    # and make a key in use look unused.
     if grep -E '^[[:space:]]*deb|^Signed-By:' -r -s -h \
-        "${list}" "${APT_REPO_SOURCES}" | grep -qF -- "${key}"; then
+        "${list}" "${APT_REPO_SOURCES}" | grep -F -- "${key}" > /dev/null; then
       echo "${0##*/}: keeping ${key}, still used by a source." >&2
       continue
     fi

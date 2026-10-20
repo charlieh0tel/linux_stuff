@@ -28,8 +28,7 @@ main() {
   # Old sources may name another key, which apt would reject as a conflict.
   apt_repo::remove_legacy tailscale pkgs.tailscale.com/stable/ubuntu "*"
 
-  if ! dpkg-query -W -f='${db:Status-Abbrev}' tailscale-archive-keyring \
-      2> /dev/null | grep -q '^ii'; then
+  if ! apt_repo::installed tailscale-archive-keyring; then
     apt_repo::install_key tailscale \
       "https://pkgs.tailscale.com/stable/ubuntu/${codename}.noarmor.gpg" \
       "${FINGERPRINT}"
