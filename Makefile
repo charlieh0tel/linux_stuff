@@ -9,7 +9,7 @@ PL = $(shell git ls-files '*.pl')
 lint: lint-sh lint-py lint-pl
 
 lint-sh:
-	shellcheck $(SH)
+	shellcheck -x $(SH)
 
 lint-py:
 	$(RUFF) check $(PY)
