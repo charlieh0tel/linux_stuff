@@ -20,13 +20,15 @@ apt-get install -y ca-certificates curl gpg
 TMP="$(mktemp -d)"
 trap 'rm -rf "${TMP}"' EXIT
 
-curl -fsSL "${URL}/public.key" | gpg --dearmor -o "${TMP}/key.gpg"
-
-if ! gpg --show-keys --with-colons "${TMP}/key.gpg" |
-        grep -q "^fpr:::::::::${FINGERPRINT}:"; then
-    echo "$0: key fingerprint does not match ${FINGERPRINT}." >&2
+# Install only the pinned key, so extra keys in public.key are never trusted.
+export GNUPGHOME="${TMP}/gnupg"
+install -m 0700 -d "${GNUPGHOME}"
+curl -fsSL "${URL}/public.key" | gpg --batch --quiet --import
+if ! gpg --batch --list-keys "${FINGERPRINT}" > /dev/null 2>&1; then
+    echo "$0: key ${FINGERPRINT} not found in ${URL}/public.key." >&2
     exit 1
 fi
+gpg --batch --export "${FINGERPRINT}" > "${TMP}/key.gpg"
 
 install -m 0755 -d /etc/apt/keyrings
 install -m 0644 "${TMP}/key.gpg" "${KEYRING}"
