@@ -17,7 +17,8 @@ main() {
   apt_repo::write_sources charlieh0tel \
     "URIs: ${URL}" \
     "Suites: bookworm" \
-    "Components: main"
+    "Components: main" \
+    "Architectures: $(dpkg --print-architecture)"
   apt_repo::remove_legacy charlieh0tel charlieh0tel.github.io/apt-repo "*" \
     /usr/share/keyrings/charlieh0tel.gpg
   apt_repo::update
