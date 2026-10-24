@@ -9,3 +9,4 @@ alias gitclean='git clean -f -d -x'
 
 alias s='ssh-keygen -f "/home/ch/.ssh/known_hosts" -R "10.42.0.1" && ssh root@10.42.0.1'
 alias pioenv='. /home/ch/.platformio/penv/bin/activate'
+alias giddyup='for x in *; do [ -d "${x}/.git" ] && echo "${x}" && git -C "${x}" pull --ff-only; done'
