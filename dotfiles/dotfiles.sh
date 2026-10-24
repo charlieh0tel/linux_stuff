@@ -104,7 +104,7 @@ case "${cmd}" in
     diff)
         rc=0
         for r in "${files[@]}"; do
-            diff -u --label "${r#"${REPO}"/}" --label "$(home_path "${r}")" "${r}" "$(home_path "${r}")" || rc=1
+            diff -uN --label "${r#"${REPO}"/}" --label "$(home_path "${r}")" "${r}" "$(home_path "${r}")" || rc=1
         done
         exit ${rc}
         ;;
