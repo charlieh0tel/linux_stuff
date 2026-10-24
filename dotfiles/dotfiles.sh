@@ -7,7 +7,7 @@ set -o pipefail
 REPO=$(cd "$(dirname "$0")" && pwd)
 
 usage() {
-    echo "usage: $0 [-s host] {in|out|diff} [~/.file ...]" >&2
+    echo "usage: $0 [-s host] {down|up|diff} [~/.file ...]" >&2
     exit 1
 }
 
@@ -24,7 +24,7 @@ tracked() {
     find "${REPO}" -type f -name 'dot.*' | sort
 }
 
-# Ship the repo to a temp dir on host and run the command there; for "in",
+# Ship the repo to a temp dir on host and run the command there; for "up",
 # ship the updated dot files back.
 # The script is expanded on the remote side.
 # shellcheck disable=SC2016,SC2029
@@ -41,7 +41,7 @@ remote() {
     script+='; tar -C "$t" -xf -'
     script+="; bash \"\$t/dotfiles.sh\" ${cmd} ${args[*]}"
     local back=cat
-    if [ "${cmd}" = in ]; then
+    if [ "${cmd}" = up ]; then
         script+=' >&2; cd "$t" && tar -cf - dot.*'
         back="tar -C ${REPO@Q} -xf -"
     fi
@@ -64,7 +64,9 @@ cmd=$1
 shift
 
 case "${cmd}" in
-    in|out|diff) ;;
+    down|download) cmd=down ;;
+    up|upload) cmd=up ;;
+    diff) ;;
     *) usage ;;
 esac
 
@@ -83,13 +85,13 @@ else
 fi
 
 case "${cmd}" in
-    in)
+    up)
         for r in "${files[@]}"; do
             mkdir -p "$(dirname "${r}")"
             cp -v "$(home_path "${r}")" "${r}"
         done
         ;;
-    out)
+    down)
         for r in "${files[@]}"; do
             h=$(home_path "${r}")
             mkdir -p "$(dirname "${h}")"
