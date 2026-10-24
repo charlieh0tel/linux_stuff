@@ -2,11 +2,12 @@
 
 set -o errexit
 set -o nounset
+set -o pipefail
 
 REPO=$(cd "$(dirname "$0")" && pwd)
 
 usage() {
-    echo "usage: $0 {in|out|diff} [~/.file ...]" >&2
+    echo "usage: $0 [-s host] {in|out|diff} [~/.file ...]" >&2
     exit 1
 }
 
@@ -23,9 +24,54 @@ tracked() {
     find "${REPO}" -type f -name 'dot.*' | sort
 }
 
+# Ship the repo to a temp dir on host and run the command there; for "in",
+# ship the updated dot files back.
+# The script is expanded on the remote side.
+# shellcheck disable=SC2016,SC2029
+remote() {
+    local host=$1 cmd=$2
+    shift 2
+    local args=() f r
+    for f in "$@"; do
+        r=$(repo_path "$(realpath -s "${f}")")
+        printf -v f '"$HOME"/.%q' "${r#"${REPO}"/dot.}"
+        args+=("${f}")
+    done
+    local script='set -e; t=$(mktemp -d); trap '\''rm -rf "$t"'\'' EXIT'
+    script+='; tar -C "$t" -xf -'
+    script+="; bash \"\$t/dotfiles.sh\" ${cmd} ${args[*]}"
+    local back=cat
+    if [ "${cmd}" = in ]; then
+        script+=' >&2; cd "$t" && tar -cf - dot.*'
+        back="tar -C ${REPO@Q} -xf -"
+    fi
+    (cd "${REPO}" && tar -cf - dotfiles.sh dot.*) \
+        | ssh "${host}" "${script}" \
+        | eval "${back}"
+}
+
+host=
+while getopts s: opt; do
+    case "${opt}" in
+        s) host=${OPTARG} ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+
 [ $# -ge 1 ] || usage
 cmd=$1
 shift
+
+case "${cmd}" in
+    in|out|diff) ;;
+    *) usage ;;
+esac
+
+if [ -n "${host}" ]; then
+    remote "${host}" "${cmd}" "$@"
+    exit
+fi
 
 if [ $# -gt 0 ]; then
     files=()
