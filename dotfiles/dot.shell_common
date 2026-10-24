@@ -1,6 +1,7 @@
 # ~/.shell_common: environment shared by all shells.
 # Sourced from ~/.profile (login shells, any sh) and the top of ~/.bashrc
 # (non-login bash, including `ssh host cmd`).
+# Machine-local additions go in ~/.shell_common.local.
 #
 # Keep this POSIX sh, quiet (no output), and idempotent: it may be sourced
 # several times in one shell and again in every nested shell.
@@ -38,3 +39,9 @@ for d in "${HOME}/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin" \
     fi
 done
 unset d
+
+# Machine-local settings; untracked.
+if [ -f "${HOME}/.shell_common.local" ]; then
+    # shellcheck source=/dev/null
+    . "${HOME}/.shell_common.local"
+fi
