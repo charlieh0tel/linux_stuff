@@ -9,10 +9,10 @@
  ;; If there is more than one, they won't work right.
  '(debian-changelog-full-name "Christopher Hoover")
  '(debian-changelog-mailing-address "ch@murgatroid.com")
+ '(hexl-bits 8)
  '(inhibit-startup-screen t)
- '(package-selected-packages '(cargo-mode rust-mode go-mode))
- '(rust-format-on-save t)
- '(hexl-bits 8))
+ '(package-selected-packages '(csv-mode cargo-mode rust-mode go-mode))
+ '(rust-format-on-save t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -27,6 +27,8 @@
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (defun del-binary_characters (beg end)
   "Delete non-ascii characters in a region"

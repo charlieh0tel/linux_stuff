@@ -3,10 +3,29 @@
 	name = Christopher Hoover
 [color]
 	ui = auto
+[core]
+	excludesfile = ~/.gitignore_global
 [init]
 	defaultBranch = main
 [pull]
 	rebase = true
+[push]
+	default = simple
+	autoSetupRemote = true
+[submodule]
+	recurse = true
+[http]
+	postBuffer = 268435456
+[diff]
+	tool = meld
+[difftool]
+	prompt = false
+[difftool "meld"]
+	cmd = meld "$LOCAL" "$REMOTE"
+[merge]
+	tool = meld
+[mergetool "meld"]
+	cmd = meld "$LOCAL" "$MERGED" "$REMOTE" --output "$MERGED"
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -14,3 +33,6 @@
 	required = true
 [url "git@github.com:"]
 	insteadOf = https://github.com/
+# Machine-local settings and secrets (credential helper, cookiefile); untracked.
+[include]
+	path = ~/.gitconfig.local
