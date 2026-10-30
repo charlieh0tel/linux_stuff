@@ -12,13 +12,13 @@ path_append()  { case ":${PATH}:" in *":$1:"*) ;; *) [ -d "$1" ] && PATH="${PATH
 path_prepend /usr/sbin
 path_prepend /sbin
 path_prepend "${HOME}/bin"
-path_prepend "${HOME}/.local/bin"
 path_prepend "${HOME}/.cargo/bin"
 path_prepend "${HOME}/.npm-modules/bin"
 path_prepend "${HOME}/.npm-packages/bin"
 path_prepend "${HOME}/.go/bin"
 path_prepend "${HOME}/go/bin"
 path_prepend "${HOME}/.deno/bin"
+path_prepend "${HOME}/.local/bin"
 path_append "${HOME}/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin"
 path_append "${HOME}/apps/stm32cubeprogrammer/bin"
 #path_append "${HOME}/apps/zig-x86_64-linux-0.16.0-dev.2510+bcb5218a2"
