@@ -1,0 +1,12 @@
+# Shared ssh config, tracked in linux_stuff/dotfiles (a public repo).
+#
+# Bare host names resolve through Tailscale MagicDNS.  config.d/home
+# overrides them with LAN names while this machine is on the home LAN.
+# Private or per-machine entries go in the untracked ~/.ssh/config.local,
+# read first so it overrides the rest.
+
+Include ~/.ssh/config.local
+
+Match localnetwork 10.0.0.0/16
+    Include ~/.ssh/config.d/home
+Match all
