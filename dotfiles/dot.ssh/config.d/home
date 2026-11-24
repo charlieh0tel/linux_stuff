@@ -1,0 +1,13 @@
+# On the home LAN.
+
+Host apu-0
+    HostName apu-0.murgatroid.com
+Host kiwisdr
+     User debian
+Host pi-star
+     Hostname pi-star.dyn.murgatroid.com.
+     User pi-star
+Host krakensdr
+     User krakenrf
+Host qbone
+     User root
