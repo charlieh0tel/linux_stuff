@@ -21,7 +21,7 @@ repo_path() {
 }
 
 tracked() {
-    find "${REPO}" -type f -name 'dot.*' | sort
+    find "${REPO}" -path "${REPO}/dot.*" -type f ! -name '*~' | sort
 }
 
 # Ship the repo to a temp dir on host and run the command there; for "up",
