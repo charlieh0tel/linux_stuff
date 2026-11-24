@@ -33,7 +33,7 @@ remote() {
     shift 2
     local args=() f r
     for f in "$@"; do
-        r=$(repo_path "$(realpath -s "${f}")")
+        r=$(repo_path "$(realpath -ms "${f}")")
         printf -v f '"$HOME"/.%q' "${r#"${REPO}"/dot.}"
         args+=("${f}")
     done
@@ -78,7 +78,7 @@ fi
 if [ $# -gt 0 ]; then
     files=()
     for f in "$@"; do
-        files+=("$(repo_path "$(realpath -s "${f}")")")
+        files+=("$(repo_path "$(realpath -ms "${f}")")")
     done
 else
     mapfile -t files < <(tracked)
@@ -95,10 +95,16 @@ case "${cmd}" in
         for r in "${files[@]}"; do
             h=$(home_path "${r}")
             mkdir -p "$(dirname "${h}")"
+            # Numbered backups (~/.foo.~1~, ...) so older ones survive.
             if [ -e "${h}" ] && ! cmp -s "${r}" "${h}"; then
-                cp -v "${h}" "${h}~"
+                cp -v --backup=numbered "${r}" "${h}"
+            else
+                cp -v "${r}" "${h}"
             fi
-            cp -v "${r}" "${h}"
+            # ssh refuses config that others can write.
+            case "${h}" in
+                "${HOME}"/.ssh/*) chmod go-rwx "$(dirname "${h}")" "${h}" ;;
+            esac
         done
         ;;
     diff)
